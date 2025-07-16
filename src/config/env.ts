@@ -10,6 +10,36 @@ const envSchema = z.object({
   RATE_LIMIT_MAX: z.coerce.number().default(100),
   RATE_LIMIT_WINDOW: z.coerce.number().default(60000),
   HEALTH_CHECK_INTERVAL: z.coerce.number().default(30000),
+  
+  // Database configuration
+  DATABASE_URL: z.string().optional(),
+  DB_HOST: z.string().default('localhost'),
+  DB_PORT: z.coerce.number().default(5432),
+  DB_NAME: z.string().default('fastify_app'),
+  DB_USER: z.string().default('postgres'),
+  DB_PASSWORD: z.string().default('postgres'),
+  DB_SSL: z.coerce.boolean().default(false),
+  DB_POOL_MIN: z.coerce.number().default(2),
+  DB_POOL_MAX: z.coerce.number().default(10),
+  DB_CONNECTION_TIMEOUT: z.coerce.number().default(30000),
+  DB_IDLE_TIMEOUT: z.coerce.number().default(30000),
+  
+  // Redis configuration (optional)
+  ENABLE_REDIS : z.string().optional(), 
+  REDIS_URL: z.string().optional(),
+  REDIS_HOST: z.string().default('localhost'),
+  REDIS_PORT: z.coerce.number().default(6379),
+  REDIS_PASSWORD: z.string().optional(),
+  REDIS_DB: z.coerce.number().default(0),
+  REDIS_USERNAME : z.string().optional(),
+  
+  // JWT configuration
+  JWT_SECRET: z.string().default('your-super-secret-jwt-key-change-in-production'),
+  JWT_EXPIRES_IN: z.string().default('24h'),
+  
+  // API configuration
+  API_VERSION: z.string().default('v1'),
+  API_PREFIX: z.string().default('/api'),
 });
 
 export type Config = z.infer<typeof envSchema>;
@@ -30,11 +60,30 @@ const parseEnv = (): Config => {
 
 export const config = parseEnv();
 
-// Utility function to check if we're in production
+// Utility functions
 export const isProduction = () => config.NODE_ENV === 'production';
-
-// Utility function to check if we're in development
 export const isDevelopment = () => config.NODE_ENV === 'development';
-
-// Utility function to check if we're in test
 export const isTest = () => config.NODE_ENV === 'test';
+
+// Database connection string builder
+export const getDatabaseUrl = (): string => {
+  if (config.DATABASE_URL) {
+    return config.DATABASE_URL;
+  }
+  
+  const { DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD } = config;
+  return `postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
+};
+
+// Redis connection string builder
+export const getRedisUrl = (): string => {
+  if (config.REDIS_URL) {
+    return config.REDIS_URL;
+  }
+  
+  const { REDIS_HOST, REDIS_PORT, REDIS_PASSWORD, REDIS_DB } = config;
+  const auth = REDIS_PASSWORD ? `:${REDIS_PASSWORD}@` : '';
+  return `redis://${auth}${REDIS_HOST}:${REDIS_PORT}/${REDIS_DB}`;
+};
+
+export const isRedisEnabled = config.ENABLE_REDIS === "true"

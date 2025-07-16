@@ -1,6 +1,6 @@
 import { FastifyInstance } from 'fastify';
-import { config } from '@/config/env';
-
+import { config, isRedisEnabled } from '@/config/env';
+import databasePlugin from './database';
 export const registerPlugins = async (server: FastifyInstance) => {
   // Register sensible defaults
   await server.register(import('@fastify/sensible'));
@@ -62,6 +62,13 @@ await server.register(underPressure, {
     // Don't return the reply object - the function should return void
   },
 });
+
+
+ // Database and Redis plugins
+  await server.register(databasePlugin);
+if (isRedisEnabled) {
+  await server.register(import("./redis"))
+}
 
   // Register Swagger documentation
   await server.register(import('@fastify/swagger'), {
