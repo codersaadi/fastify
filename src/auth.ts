@@ -26,6 +26,7 @@ const auth = betterAuth({
   emailAndPassword: {
     enabled: true
   },
+  
   advanced: {
     cookiePrefix: 'code-fastify',
     database: {

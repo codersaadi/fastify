@@ -33,6 +33,8 @@ const start = async () => {
     logger.info(`Environment: ${config.NODE_ENV}`);
     logger.info(`Swagger UI available at: http://${config.HOST}:${config.PORT}/documentation`);
   } catch (error) {
+    console.log({error});
+    
     logger.error('Failed to start server:', error);
     process.exit(1);
   }

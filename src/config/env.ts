@@ -1,5 +1,8 @@
+import { configDotenv } from 'dotenv';
 import { z } from 'zod';
-
+configDotenv({
+  path :"./.env.local"
+})
 const envSchema = z.object({
   NODE_ENV: z.enum([
     'development',
@@ -43,11 +46,6 @@ const envSchema = z.object({
   REDIS_PASSWORD: z.string().optional(),
   REDIS_DB: z.coerce.number().default(0),
   REDIS_USERNAME: z.string().optional(),
-
-  // JWT configuration
-  JWT_SECRET: z.string().default('your-super-secret-jwt-key-change-in-production'),
-  JWT_EXPIRES_IN: z.string().default('24h'),
-
   // API configuration
   API_VERSION: z.string().default('v1'),
   API_PREFIX: z.string().default('/api'),
@@ -60,6 +58,7 @@ export type Config = z.infer<typeof envSchema>;
 
 const parseEnv = (): Config => {
   try {
+    
     return envSchema.parse(process.env);
   } catch (error) {
     if (error instanceof z.ZodError) {

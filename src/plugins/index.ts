@@ -68,19 +68,19 @@ export const registerPlugins = async (server: FastifyInstance) => {
   });
 
   // Register under pressure for monitoring
-  const underPressure = await import('@fastify/under-pressure');
-  await server.register(underPressure.default, {
-    maxEventLoopDelay: 1000,
-    maxHeapUsedBytes: 100000000,
-    maxRssBytes: 100000000,
-    maxEventLoopUtilization: 0.98,
-    message: 'Under pressure!',
-    retryAfter: 50,
-    pressureHandler: (_req, rep, type, value) => {
-      server.log.warn(`Server under pressure: ${type} = ${value}`);
-      rep.send('Server under pressure');
-    }
-  });
+  // const underPressure = await import('@fastify/under-pressure');
+  // await server.register(underPressure.default, {
+  //   maxEventLoopDelay: 1000,
+  //   maxHeapUsedBytes: 100000000,
+  //   maxRssBytes: 100000000,
+  //   maxEventLoopUtilization: 0.98,
+  //   message: 'Under pressure!',
+  //   retryAfter: 50,
+  //   pressureHandler: (_req, rep, type, value) => {
+  //     server.log.warn(`Server under pressure: ${type} = ${value}`);
+  //     rep.send('Server under pressure');
+  //   }
+  // });
 
   // Database and Redis plugins
   await server.register(databasePlugin);

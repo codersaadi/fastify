@@ -17,8 +17,7 @@ declare module 'fastify' {
 const dbPlugin: FastifyPluginAsync = async (fastify: FastifyInstance) => {
   // Decorate fastify instance
   fastify.decorate('db', db);
-  fastify.decorateRequest('db', db);
-
+  // fastify.decorateRequest('db', db);
   // Close pool when server closes
   fastify.addHook('onClose', async () => {
     await pool.end();

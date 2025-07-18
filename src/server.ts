@@ -1,10 +1,12 @@
 import { config } from '@/config/env';
 import { registerPlugins } from '@/plugins';
 import { logger } from '@/utils/logger';
-
+import dotEnv from 'dotenv'
 import Fastify, { FastifyInstance } from 'fastify';
 
 export const createServer = async (): Promise<FastifyInstance> => {
+dotEnv.config()
+
   // Create logger configuration for Fastify
 const fastifyLoggerConfig = config.NODE_ENV === 'production'
   ? logger
