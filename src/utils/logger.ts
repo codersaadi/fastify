@@ -1,4 +1,4 @@
-import { config } from '@/config/env';
+import { env as config } from '@/config/env';
 
 import { FastifyReply, FastifyRequest } from 'fastify';
 import pino from 'pino';

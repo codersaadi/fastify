@@ -1,4 +1,4 @@
-import { config } from '@/config/env';
+import { env as config } from '@/config/env';
 import { registerPlugins } from '@/plugins';
 import { logger } from '@/utils/logger';
 
