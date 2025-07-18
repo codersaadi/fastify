@@ -1,11 +1,20 @@
-// src/config/auth/providers/index.ts
-import { google } from './google.js';
-import { github } from './github.js';
-import { facebook } from './facebook.js';
+import { env } from '@/config/env.js';
+
 import { apple } from './apple.js';
 import { discord } from './discord.js';
+import { dropbox } from './dropbox.js';
+import { facebook } from './facebook.js';
+import { github } from './github.js';
+import { gitlab } from './gitlab.js';
+import { google } from './google.js';
+import { kick } from './kick.js';
+import { linkedin } from './linkedin.js';
+import { microsoft } from './microsoft.js';
+import { reddit } from './reddit.js';
+import { tiktok } from './tiktok.js';
+import { twitch } from './twitch.js';
 import { twitter } from './twitter.js';
-import { env } from '@/config/env.js';
+import { zoom } from './zoom.js';
 
 export const allProviders = {
   google,
@@ -14,6 +23,15 @@ export const allProviders = {
   apple,
   discord,
   twitter,
+  zoom,
+  kick,
+  dropbox,
+  gitlab,
+  linkedin,
+  tiktok,
+  twitch,
+  reddit,
+  microsoft
 } as const;
 
 export type ProviderName = keyof typeof allProviders;
@@ -25,7 +43,7 @@ export type AuthProvider = {
 };
 
 export class AuthConfigError extends Error {
-  constructor(message: string) {
+  constructor (message: string) {
     super(message);
     this.name = 'AuthConfigError';
   }
@@ -35,54 +53,48 @@ const parseAuthProviders = (providerString?: string): ProviderName[] => {
   if (!providerString) {
     return [];
   }
-  
+
   const providers = providerString
     .split(',')
-    .map(provider => provider.trim().toLowerCase() as ProviderName)
-    .filter(provider => provider.length > 0);
-  
+    .map((provider) => provider.trim().toLowerCase() as ProviderName)
+    .filter((provider) => provider.length > 0);
+
   // Validate that all providers are supported
   const supportedProviders = Object.keys(allProviders) as ProviderName[];
-  const unsupportedProviders = providers.filter(
-    provider => !supportedProviders.includes(provider)
-  );
-  
+  const unsupportedProviders = providers.filter((provider) => !supportedProviders.includes(provider));
+
   if (unsupportedProviders.length > 0) {
-    throw new AuthConfigError(
-      `Unsupported auth providers: ${unsupportedProviders.join(', ')}. ` +
-      `Supported providers: ${supportedProviders.join(', ')}`
-    );
+    throw new AuthConfigError(`Unsupported auth providers: ${unsupportedProviders.join(', ')}. ` +
+      `Supported providers: ${supportedProviders.join(', ')}`);
   }
-  
+
   return providers;
 };
 
 export const getAuthProviders = (): AuthProvider[] => {
   const enabledProviderNames = parseAuthProviders(env.AUTH_PROVIDERS);
-  
+
   if (enabledProviderNames.length === 0) {
     return [];
   }
-  
+
   const providers: AuthProvider[] = [];
-  
+
   for (const providerName of enabledProviderNames) {
     const providerConfig = allProviders[providerName];
-    
+
     // Validate that required credentials are present
     if (!providerConfig.clientId || !providerConfig.clientSecret) {
-      throw new AuthConfigError(
-        `Missing credentials for ${providerName} provider. ` +
-        `Please set ${providerName.toUpperCase()}_CLIENT_ID and ${providerName.toUpperCase()}_CLIENT_SECRET`
-      );
+      throw new AuthConfigError(`Missing credentials for ${providerName} provider. ` +
+        `Please set ${providerName.toUpperCase()}_CLIENT_ID and ${providerName.toUpperCase()}_CLIENT_SECRET`);
     }
-    
+
     providers.push({
       name: providerName,
-      config: providerConfig,
+      config: providerConfig
     });
   }
-  
+
   return providers;
 };
 
@@ -94,7 +106,6 @@ export const isProviderEnabled = (providerName: ProviderName): boolean => {
   const enabledProviders = getEnabledProviderNames();
   return enabledProviders.includes(providerName);
 };
-
 
 // Utility to get a specific provider config
 export const getProviderConfig = <T extends ProviderName>(

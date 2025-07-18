@@ -82,7 +82,7 @@ export const notFoundResponse = (
 export const validationErrorResponse = (
   reply: FastifyReply,
   message = 'Validation failed',
-  details?: any
+  details?: unknown
 ): FastifyReply => {
   const response = {
     error: 'Validation Error',

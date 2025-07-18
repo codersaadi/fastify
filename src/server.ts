@@ -1,28 +1,29 @@
 import { config } from '@/config/env';
 import { registerPlugins } from '@/plugins';
 import { logger } from '@/utils/logger';
-import dotEnv from 'dotenv'
+
+import dotEnv from 'dotenv';
 import Fastify, { FastifyInstance } from 'fastify';
 
 export const createServer = async (): Promise<FastifyInstance> => {
-dotEnv.config()
+  dotEnv.config();
 
   // Create logger configuration for Fastify
-const fastifyLoggerConfig = config.NODE_ENV === 'production'
-  ? logger
-  : {
-      level: config.LOG_LEVEL,
-      ...(config.LOG_PRETTY && {
-        transport: {
-          target: 'pino-pretty',
-          options: {
-            colorize: true,
-            translateTime: 'HH:MM:ss Z',
-            ignore: 'pid,hostname'
+  const fastifyLoggerConfig = config.NODE_ENV === 'production'
+    ? logger
+    : {
+        level: config.LOG_LEVEL,
+        ...(config.LOG_PRETTY && {
+          transport: {
+            target: 'pino-pretty',
+            options: {
+              colorize: true,
+              translateTime: 'HH:MM:ss Z',
+              ignore: 'pid,hostname'
+            }
           }
-        }
-      })
-    };
+        })
+      };
 
   const server = Fastify({
     logger: fastifyLoggerConfig,
@@ -98,4 +99,3 @@ const fastifyLoggerConfig = config.NODE_ENV === 'production'
 
   return server;
 };
-

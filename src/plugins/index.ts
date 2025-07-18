@@ -4,8 +4,8 @@ import authHook from '@/routes/auth.hook';
 import { FastifyInstance } from 'fastify';
 
 import authPlugin from './auth';
-import multipart from './multipart';
 import databasePlugin from './database';
+import multipart from './multipart';
 export const registerPlugins = async (server: FastifyInstance) => {
   // Register sensible defaults
   await server.register(import('@fastify/sensible'));
@@ -91,7 +91,7 @@ export const registerPlugins = async (server: FastifyInstance) => {
   await server.register(authPlugin);
   // Register auth hook
   await server.register(authHook);
-  await server.register(multipart)
+  await server.register(multipart);
   // Register Swagger documentation
   await server.register(import('@fastify/swagger'), {
     swagger: {

@@ -1,7 +1,7 @@
 import { logger } from '@/utils/logger';
 
 // Async error handler wrapper
-export const asyncHandler = <T extends any[], R>(
+export const asyncHandler = <T extends unknown[], R>(
   fn: (...args: T) => Promise<R>
 ) => {
   return async (...args: T): Promise<R> => {
@@ -39,7 +39,6 @@ export const retry = async <T>(
       await sleep(delay);
     }
   }
-
   throw lastError!;
 };
 
@@ -54,7 +53,7 @@ export const withTimeout = <T>(
   timeoutMs: number,
   errorMessage = 'Operation timed out'
 ): Promise<T> => {
-  const timeoutPromise = new Promise<never>((_, reject) => {
+  const timeoutPromise = new Promise<never>((_p, reject) => {
     setTimeout(() => reject(new Error(errorMessage)), timeoutMs);
   });
 
@@ -91,7 +90,7 @@ export const batchProcess = async <T, R>(
 };
 
 // Debounce utility
-export const debounce = <T extends any[]>(
+export const debounce = <T extends unknown[]>(
   func: (...args: T) => void,
   wait: number
 ): (...args: T) => void => {
@@ -104,7 +103,7 @@ export const debounce = <T extends any[]>(
 };
 
 // Throttle utility
-export const throttle = <T extends any[]>(
+export const throttle = <T extends unknown[]>(
   func: (...args: T) => void,
   limit: number
 ): (...args: T) => void => {

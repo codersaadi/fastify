@@ -46,7 +46,7 @@ const loggerOptions = config.NODE_ENV === 'development' && config.LOG_PRETTY
     }
   : baseLoggerOptions;
 
-export const logger = pino(loggerOptions) ;
+export const logger = pino(loggerOptions);
 
 // Custom log methods for common use cases
 export const logRequest = (req: FastifyRequest, message?: string) => {

@@ -1,16 +1,16 @@
-import { Config } from '@/config/env';
+import { EnvConfig } from '@/config/env';
 
 import { FastifyRequest, FastifyReply } from 'fastify';
 
 // Extend Fastify types
 declare module 'fastify' {
   interface FastifyInstance {
-    config: Config;
+    config: EnvConfig;
   }
 }
 
 // Common response types
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;
@@ -47,7 +47,7 @@ export type FastifyRequestWithUser = FastifyRequest & {
   };
 };
 
-export type FastifyReplyTyped<T = any> = FastifyReply & {
+export type FastifyReplyTyped<T = unknown> = FastifyReply & {
   send: (payload: T) => FastifyReply;
 };
 
@@ -69,12 +69,12 @@ export interface HealthCheckResponse {
 }
 
 // Generic handler types
-export type AsyncHandler<T = any> = (
+export type AsyncHandler<T = unknown> = (
   request: FastifyRequest,
   reply: FastifyReply
 ) => Promise<T>;
 
-export type Handler<T = any> = (
+export type Handler<T = unknown> = (
   request: FastifyRequest,
   reply: FastifyReply
 ) => T;
