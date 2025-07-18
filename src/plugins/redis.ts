@@ -9,13 +9,6 @@ declare module 'fastify' {
     redis: Redis;
   }
 }
-// const redisServerConfig = {
-//     port : config.REDIS_PORT,
-//     host : config.REDIS_HOST,
-//     password : config.REDIS_PASSWORD,
-//     username : config.REDIS_USERNAME, 
-// }
-
 
 
 const redisPlugin: FastifyPluginAsync = async (fastify: FastifyInstance) => {

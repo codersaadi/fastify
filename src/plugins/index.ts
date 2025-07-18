@@ -1,6 +1,8 @@
 import { FastifyInstance } from 'fastify';
 import { config, isRedisEnabled } from '@/config/env';
 import databasePlugin from './database';
+import authHook from '@/routes/auth.hook';
+
 export const registerPlugins = async (server: FastifyInstance) => {
   // Register sensible defaults
   await server.register(import('@fastify/sensible'));
@@ -47,28 +49,30 @@ export const registerPlugins = async (server: FastifyInstance) => {
     },
   });
 
-const underPressure = await import('@fastify/under-pressure');
-// Register under pressure for monitoring
-await server.register(underPressure, {
-  maxEventLoopDelay: 1000,
-  maxHeapUsedBytes: 100000000,
-  maxRssBytes: 100000000,
-  maxEventLoopUtilization: 0.98,
-  message: 'Under pressure!',
-  retryAfter: 50,
-  pressureHandler: (req, rep, type, value) => {
-    server.log.warn(`Server under pressure: ${type} = ${value}`);
-    rep.send('Server under pressure');
-    // Don't return the reply object - the function should return void
-  },
-});
+  // Register under pressure for monitoring
+  const underPressure = await import('@fastify/under-pressure');
+  await server.register(underPressure.default, {
+    maxEventLoopDelay: 1000,
+    maxHeapUsedBytes: 100000000,
+    maxRssBytes: 100000000,
+    maxEventLoopUtilization: 0.98,
+    message: 'Under pressure!',
+    retryAfter: 50,
+    pressureHandler: (req, rep, type, value) => {
+      server.log.warn(`Server under pressure: ${type} = ${value}`);
+      rep.send('Server under pressure');
+    },
+  });
 
-
- // Database and Redis plugins
+  // Database and Redis plugins
   await server.register(databasePlugin);
-if (isRedisEnabled) {
-  await server.register(import("./redis"))
-}
+  
+  if (isRedisEnabled) {
+    await server.register(import('./redis'));
+  }
+
+  // Register auth hook
+  await server.register(authHook);
 
   // Register Swagger documentation
   await server.register(import('@fastify/swagger'), {

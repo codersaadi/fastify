@@ -1,4 +1,4 @@
-import pino from 'pino';
+import pino, { Logger } from 'pino';
 import { config } from '@/config/env';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
@@ -45,7 +45,7 @@ const loggerOptions = config.NODE_ENV === 'development' && config.LOG_PRETTY
     }
   : baseLoggerOptions;
 
-export const logger = pino(loggerOptions);
+export const logger = pino(loggerOptions) satisfies Logger<any,boolean>;
 
 // Custom log methods for common use cases
 export const logRequest = (req: FastifyRequest, message?: string) => {

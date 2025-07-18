@@ -5,21 +5,6 @@ import { registerPlugins } from '@/plugins';
 
 export const createServer = async (): Promise<FastifyInstance> => {
  // Create logger configuration for Fastify
-  const fastifyLoggerConfig = config.NODE_ENV === 'production' 
-    ? logger 
-    : {
-        level: config.LOG_LEVEL,
-        ...(config.LOG_PRETTY && {
-          transport: {
-            target: 'pino-pretty',
-            options: {
-              colorize: true,
-              translateTime: 'HH:MM:ss Z',
-              ignore: 'pid,hostname',
-            },
-          },
-        }),
-      };
 
     const server = Fastify({
     logger : fastifyLoggerConfig,
@@ -95,3 +80,20 @@ export const createServer = async (): Promise<FastifyInstance> => {
 
   return server;
 };
+
+
+const fastifyLoggerConfig = config.NODE_ENV === 'production' 
+? logger 
+: {
+    level: config.LOG_LEVEL,
+    ...(config.LOG_PRETTY && {
+      transport: {
+        target: 'pino-pretty',
+        options: {
+          colorize: true,
+          translateTime: 'HH:MM:ss Z',
+          ignore: 'pid,hostname',
+        },
+      },
+    }),
+  };
