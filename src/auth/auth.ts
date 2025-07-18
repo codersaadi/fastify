@@ -2,7 +2,8 @@ import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { admin, openAPI } from 'better-auth/plugins';
 
-import { db } from './db/index';
+import { db } from '../db/index';
+import { getAuthProviders, ProviderConfig } from './providers';
 
 const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -24,9 +25,15 @@ const auth = betterAuth({
     }
   },
   emailAndPassword: {
-    enabled: true
+    enabled: true,
   },
   
+  socialProviders: getAuthProviders().reduce((acc, { name, config }) => {
+    acc[name] = config;
+    return acc;
+  }, {} as Record<string, ProviderConfig>),
+
+
   advanced: {
     cookiePrefix: 'code-fastify',
     database: {

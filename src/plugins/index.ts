@@ -1,4 +1,4 @@
-import { config, isRedisEnabled } from '@/config/env';
+import { env, isRedisEnabled } from '@/config/env';
 import authHook from '@/routes/auth.hook';
 
 import { FastifyInstance } from 'fastify';
@@ -29,7 +29,7 @@ export const registerPlugins = async (server: FastifyInstance) => {
 
   // Register CORS
   await server.register(import('@fastify/cors'), {
-    origin: config.CORS_ORIGIN.split(',').map((origin) => origin.trim()),
+    origin: env.CORS_ORIGIN.split(',').map((origin) => origin.trim()),
     credentials: true,
     methods: [
       'GET',
@@ -55,8 +55,8 @@ export const registerPlugins = async (server: FastifyInstance) => {
 
   // Register rate limiting
   await server.register(import('@fastify/rate-limit'), {
-    max: config.RATE_LIMIT_MAX,
-    timeWindow: config.RATE_LIMIT_WINDOW,
+    max: env.RATE_LIMIT_MAX,
+    timeWindow: env.RATE_LIMIT_WINDOW,
     errorResponseBuilder: (_request, context) => {
       return {
         error: 'Too Many Requests',
@@ -85,7 +85,7 @@ export const registerPlugins = async (server: FastifyInstance) => {
   // Database and Redis plugins
   await server.register(databasePlugin);
 
-  if (isRedisEnabled) {
+  if (isRedisEnabled()) {
     await server.register(import('./redis'));
   }
   await server.register(authPlugin);
@@ -100,7 +100,7 @@ export const registerPlugins = async (server: FastifyInstance) => {
         description: 'Production-ready Fastify API with TypeScript',
         version: '1.0.0'
       },
-      host: `${config.HOST}:${config.PORT}`,
+      host: `${env.HOST}:${env.PORT}`,
       schemes: ['http', 'https'],
       consumes: ['application/json'],
       produces: ['application/json'],
@@ -150,6 +150,6 @@ export const registerPlugins = async (server: FastifyInstance) => {
         HOST: { type: 'string' }
       }
     },
-    data: config
+    data: env
   });
 };
