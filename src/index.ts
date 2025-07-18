@@ -1,15 +1,15 @@
+import { config } from '@/config/env';
 import { createServer } from '@/server';
 import { logger } from '@/utils/logger';
-import { config } from '@/config/env';
 
 const start = async () => {
   try {
     const server = await createServer();
-    
+
     // Handle graceful shutdown
     const gracefulShutdown = async (signal: string) => {
       logger.info(`Received ${signal}, shutting down gracefully...`);
-      
+
       try {
         await server.close();
         logger.info('Server closed successfully');
@@ -26,13 +26,12 @@ const start = async () => {
     // Start the server
     await server.listen({
       port: config.PORT,
-      host: config.HOST,
+      host: config.HOST
     });
 
     logger.info(`Server is running on http://${config.HOST}:${config.PORT}`);
     logger.info(`Environment: ${config.NODE_ENV}`);
     logger.info(`Swagger UI available at: http://${config.HOST}:${config.PORT}/documentation`);
-    
   } catch (error) {
     logger.error('Failed to start server:', error);
     process.exit(1);

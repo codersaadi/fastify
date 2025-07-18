@@ -1,20 +1,20 @@
+import { db, DrizzleDatabase, pool } from '@/db';
+import { logger } from '@/utils/logger';
+
 import { FastifyInstance, FastifyPluginAsync } from 'fastify';
 import fp from 'fastify-plugin';
-import { logger } from '@/utils/logger';
-import { db, DrizzleDatabase, pool } from '@/db';
 
 declare module 'fastify' {
   interface FastifyInstance {
-    db: DrizzleDatabase
+    db: DrizzleDatabase;
   }
-  interface FastifyRequest{
-    db : DrizzleDatabase
-   
+  interface FastifyRequest {
+    db: DrizzleDatabase;
+
   }
 }
 
 const dbPlugin: FastifyPluginAsync = async (fastify: FastifyInstance) => {
-
   // Decorate fastify instance
   fastify.decorate('db', db);
   fastify.decorateRequest('db', db);
@@ -27,5 +27,5 @@ const dbPlugin: FastifyPluginAsync = async (fastify: FastifyInstance) => {
 };
 
 export default fp(dbPlugin, {
-  name: 'database',
+  name: 'database'
 });

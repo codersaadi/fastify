@@ -1,5 +1,7 @@
 import type { FastifyRequest } from 'fastify';
 
+import type { db } from '../db/index.ts';
+
 export function getDbDecorator (request: FastifyRequest) {
-  return request.db
+  return request.getDecorator<typeof db>('db');
 }

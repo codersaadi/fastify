@@ -1,8 +1,9 @@
+import { getRedisUrl } from '@/config/env';
+import { logger } from '@/utils/logger';
+
 import { FastifyInstance, FastifyPluginAsync } from 'fastify';
 import fp from 'fastify-plugin';
 import Redis from 'ioredis';
-import {  getRedisUrl } from '@/config/env';
-import { logger } from '@/utils/logger';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -10,16 +11,15 @@ declare module 'fastify' {
   }
 }
 
-
 const redisPlugin: FastifyPluginAsync = async (fastify: FastifyInstance) => {
   const redis = new Redis(getRedisUrl());
   // todo : add these
   // retryDelayOnFailover: 100,
-    // enableReadyCheck: false,
-    // maxRetriesPerRequest: 3,
- 
-    // Test connection
-    try {
+  // enableReadyCheck: false,
+  // maxRetriesPerRequest: 3,
+
+  // Test connection
+  try {
     await redis.ping();
     logger.info('Redis connected successfully');
   } catch (error) {
@@ -38,5 +38,5 @@ const redisPlugin: FastifyPluginAsync = async (fastify: FastifyInstance) => {
 };
 
 export default fp(redisPlugin, {
-  name: 'redis',
+  name: 'redis'
 });

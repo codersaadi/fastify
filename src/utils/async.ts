@@ -22,24 +22,24 @@ export const retry = async <T>(
   maxDelay = 10000
 ): Promise<T> => {
   let lastError: Error;
-  
+
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
       return await operation();
     } catch (error) {
       lastError = error as Error;
-      
+
       if (attempt === maxRetries) {
         throw lastError;
       }
-      
+
       const delay = Math.min(baseDelay * Math.pow(2, attempt), maxDelay);
       logger.warn(`Operation failed, retrying in ${delay}ms (attempt ${attempt + 1}/${maxRetries + 1})`);
-      
+
       await sleep(delay);
     }
   }
-  
+
   throw lastError!;
 };
 
@@ -57,7 +57,7 @@ export const withTimeout = <T>(
   const timeoutPromise = new Promise<never>((_, reject) => {
     setTimeout(() => reject(new Error(errorMessage)), timeoutMs);
   });
-  
+
   return Promise.race([promise, timeoutPromise]);
 };
 
@@ -66,17 +66,17 @@ export const batchProcess = async <T, R>(
   items: T[],
   processor: (item: T) => Promise<R>,
   batchSize = 10,
-  concurrency = 3
+  _concurrency = 3
 ): Promise<R[]> => {
   const results: R[] = [];
-  
+
   for (let i = 0; i < items.length; i += batchSize) {
     const batch = items.slice(i, i + batchSize);
-    const batchPromises = batch.map(item => processor(item));
-    
+    const batchPromises = batch.map((item) => processor(item));
+
     // Process batch with limited concurrency
     const batchResults = await Promise.allSettled(batchPromises);
-    
+
     for (const result of batchResults) {
       if (result.status === 'fulfilled') {
         results.push(result.value);
@@ -86,7 +86,7 @@ export const batchProcess = async <T, R>(
       }
     }
   }
-  
+
   return results;
 };
 
@@ -96,7 +96,7 @@ export const debounce = <T extends any[]>(
   wait: number
 ): (...args: T) => void => {
   let timeout: NodeJS.Timeout;
-  
+
   return (...args: T) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => func(...args), wait);
@@ -109,7 +109,7 @@ export const throttle = <T extends any[]>(
   limit: number
 ): (...args: T) => void => {
   let inThrottle: boolean;
-  
+
   return (...args: T) => {
     if (!inThrottle) {
       func(...args);
@@ -124,13 +124,13 @@ export class CircuitBreaker {
   private failures = 0;
   private lastFailureTime = 0;
   private state: 'closed' | 'open' | 'half-open' = 'closed';
-  
-  constructor(
+
+  constructor (
     private readonly threshold: number = 5,
     private readonly timeout: number = 60000,
     private readonly resetTimeout: number = 30000
   ) {}
-  
+
   async execute<T>(operation: () => Promise<T>): Promise<T> {
     if (this.state === 'open') {
       if (Date.now() - this.lastFailureTime > this.resetTimeout) {
@@ -139,7 +139,7 @@ export class CircuitBreaker {
         throw new Error('Circuit breaker is open');
       }
     }
-    
+
     try {
       const result = await withTimeout(operation(), this.timeout);
       this.onSuccess();
@@ -149,22 +149,22 @@ export class CircuitBreaker {
       throw error;
     }
   }
-  
-  private onSuccess(): void {
+
+  private onSuccess (): void {
     this.failures = 0;
     this.state = 'closed';
   }
-  
-  private onFailure(): void {
+
+  private onFailure (): void {
     this.failures++;
     this.lastFailureTime = Date.now();
-    
+
     if (this.failures >= this.threshold) {
       this.state = 'open';
     }
   }
-  
-  getState(): string {
+
+  getState (): string {
     return this.state;
   }
 }

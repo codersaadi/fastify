@@ -1,18 +1,34 @@
-import Fastify, { FastifyInstance } from 'fastify';
 import { config } from '@/config/env';
-import { logger } from '@/utils/logger';
 import { registerPlugins } from '@/plugins';
+import { logger } from '@/utils/logger';
+
+import Fastify, { FastifyInstance } from 'fastify';
 
 export const createServer = async (): Promise<FastifyInstance> => {
- // Create logger configuration for Fastify
+  // Create logger configuration for Fastify
+const fastifyLoggerConfig = config.NODE_ENV === 'production'
+  ? logger
+  : {
+      level: config.LOG_LEVEL,
+      ...(config.LOG_PRETTY && {
+        transport: {
+          target: 'pino-pretty',
+          options: {
+            colorize: true,
+            translateTime: 'HH:MM:ss Z',
+            ignore: 'pid,hostname'
+          }
+        }
+      })
+    };
 
-    const server = Fastify({
-    logger : fastifyLoggerConfig,
+  const server = Fastify({
+    logger: fastifyLoggerConfig,
     disableRequestLogging: config.NODE_ENV === 'production',
     trustProxy: true,
     bodyLimit: 10 * 1024 * 1024, // 10MB
     keepAliveTimeout: 5000,
-    requestTimeout: 30000,
+    requestTimeout: 30000
   });
 
   // Register all plugins
@@ -31,18 +47,18 @@ export const createServer = async (): Promise<FastifyInstance> => {
             timestamp: { type: 'string' },
             uptime: { type: 'number' },
             version: { type: 'string' },
-            environment: { type: 'string' },
-          },
-        },
-      },
-    },
-  }, async (request, reply) => {
+            environment: { type: 'string' }
+          }
+        }
+      }
+    }
+  }, async (_request, _reply) => {
     return {
       status: 'ok',
       timestamp: new Date().toISOString(),
       uptime: process.uptime(),
       version: process.env.npm_package_version ?? '1.0.0',
-      environment: config.NODE_ENV,
+      environment: config.NODE_ENV
     };
   });
 
@@ -56,16 +72,16 @@ export const createServer = async (): Promise<FastifyInstance> => {
           type: 'object',
           properties: {
             status: { type: 'string' },
-            timestamp: { type: 'string' },
-          },
-        },
-      },
-    },
-  }, async (request, reply) => {
+            timestamp: { type: 'string' }
+          }
+        }
+      }
+    }
+  }, async (_request, _reply) => {
     // Add your readiness checks here (database connection, external services, etc.)
     return {
       status: 'ready',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
   });
 
@@ -74,26 +90,10 @@ export const createServer = async (): Promise<FastifyInstance> => {
     return reply.code(404).send({
       error: 'Not Found',
       message: `Route ${request.method}:${request.url} not found`,
-      statusCode: 404,
+      statusCode: 404
     });
   });
 
   return server;
 };
 
-
-const fastifyLoggerConfig = config.NODE_ENV === 'production' 
-? logger 
-: {
-    level: config.LOG_LEVEL,
-    ...(config.LOG_PRETTY && {
-      transport: {
-        target: 'pino-pretty',
-        options: {
-          colorize: true,
-          translateTime: 'HH:MM:ss Z',
-          ignore: 'pid,hostname',
-        },
-      },
-    }),
-  };

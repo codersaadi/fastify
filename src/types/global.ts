@@ -1,5 +1,6 @@
-import { FastifyRequest, FastifyReply } from 'fastify';
 import { Config } from '@/config/env';
+
+import { FastifyRequest, FastifyReply } from 'fastify';
 
 // Extend Fastify types
 declare module 'fastify' {

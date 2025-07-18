@@ -1,6 +1,7 @@
-import { z } from 'zod';
-import { FastifyRequest, FastifyReply } from 'fastify';
 import { validationErrorResponse } from '@/utils/response';
+
+import { FastifyRequest, FastifyReply } from 'fastify';
+import { z } from 'zod';
 
 // Validation middleware creator
 export const createValidationMiddleware = <
@@ -8,39 +9,39 @@ export const createValidationMiddleware = <
   TQuery extends z.ZodTypeAny = z.ZodVoid,
   TParams extends z.ZodTypeAny = z.ZodVoid
 >(schemas: {
-  body?: TBody;
-  query?: TQuery;
-  params?: TParams;
-}) => {
+    body?: TBody;
+    query?: TQuery;
+    params?: TParams;
+  }) => {
   return async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       if (schemas.body) {
         request.body = schemas.body.parse(request.body);
       }
-      
+
       if (schemas.query) {
         request.query = schemas.query.parse(request.query);
       }
-      
+
       if (schemas.params) {
         request.params = schemas.params.parse(request.params);
       }
     } catch (error) {
       if (error instanceof z.ZodError) {
-        const validationErrors = error.errors.map(err => ({
+        const validationErrors = error.errors.map((err) => ({
           field: err.path.join('.'),
           message: err.message,
-          code: err.code,
+          code: err.code
         //   received: err.received,
         }));
-        
+
         return validationErrorResponse(
           reply,
           'Request validation failed',
           validationErrors
         );
       }
-      
+
       throw error;
     }
   };
@@ -64,10 +65,10 @@ export const safeValidate = <T extends z.ZodTypeAny>(
 
 // Transform validation errors to user-friendly format
 export const formatValidationErrors = (error: z.ZodError) => {
-  return error.errors.map(err => {
+  return error.errors.map((err) => {
     const path = err.path.join('.');
     let message = err.message;
-    
+
     // Customize error messages based on error type
     switch (err.code) {
       case 'invalid_type':
@@ -104,11 +105,11 @@ export const formatValidationErrors = (error: z.ZodError) => {
         message = `Must be one of: ${err.options.join(', ')}`;
         break;
     }
-    
+
     return {
       field: path || 'root',
       message,
-      code: err.code,
+      code: err.code
     };
   });
 };
@@ -118,25 +119,30 @@ export const createPaginationSchema = (
   defaultLimit = 20,
   maxLimit = 100
 ) => z.object({
-  page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(maxLimit).default(defaultLimit),
+  page: z.coerce.number().int()
+    .min(1)
+    .default(1),
+  limit: z.coerce.number().int()
+    .min(1)
+    .max(maxLimit)
+    .default(defaultLimit),
   sort: z.string().optional(),
   order: z.enum(['asc', 'desc']).default('asc'),
-  search: z.string().optional(),
+  search: z.string().optional()
 });
 
 export const createIdSchema = (fieldName = 'id') => z.object({
-  [fieldName]: z.string().uuid(`Invalid ${fieldName} format`),
+  [fieldName]: z.string().uuid(`Invalid ${fieldName} format`)
 });
 
 // Validation decorators (for class-based approaches)
 export const ValidateBody = <T extends z.ZodTypeAny>(schema: T) => {
-  return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
+  return (_target: unknown, _propertyKey: string, descriptor: PropertyDescriptor) => {
     const originalMethod = descriptor.value;
-    
-    descriptor.value = async function(request: FastifyRequest, reply: FastifyReply) {
+
+    descriptor.value = async function (request: FastifyRequest, reply: FastifyReply) {
       const validation = safeValidate(schema, request.body);
-      
+
       if (!validation.success) {
         return validationErrorResponse(
           reply,
@@ -144,7 +150,7 @@ export const ValidateBody = <T extends z.ZodTypeAny>(schema: T) => {
           formatValidationErrors(validation.error)
         );
       }
-      
+
       request.body = validation.data;
       return originalMethod.call(this, request, reply);
     };
@@ -152,12 +158,12 @@ export const ValidateBody = <T extends z.ZodTypeAny>(schema: T) => {
 };
 
 export const ValidateQuery = <T extends z.ZodTypeAny>(schema: T) => {
-  return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
+  return (_target: unknown, _propertyKey: string, descriptor: PropertyDescriptor) => {
     const originalMethod = descriptor.value;
-    
-    descriptor.value = async function(request: FastifyRequest, reply: FastifyReply) {
+
+    descriptor.value = async function (request: FastifyRequest, reply: FastifyReply) {
       const validation = safeValidate(schema, request.query);
-      
+
       if (!validation.success) {
         return validationErrorResponse(
           reply,
@@ -165,7 +171,7 @@ export const ValidateQuery = <T extends z.ZodTypeAny>(schema: T) => {
           formatValidationErrors(validation.error)
         );
       }
-      
+
       request.query = validation.data;
       return originalMethod.call(this, request, reply);
     };
@@ -173,12 +179,12 @@ export const ValidateQuery = <T extends z.ZodTypeAny>(schema: T) => {
 };
 
 export const ValidateParams = <T extends z.ZodTypeAny>(schema: T) => {
-  return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
+  return (_target: unknown, _propertyKey: string, descriptor: PropertyDescriptor) => {
     const originalMethod = descriptor.value;
-    
-    descriptor.value = async function(request: FastifyRequest, reply: FastifyReply) {
+
+    descriptor.value = async function (request: FastifyRequest, reply: FastifyReply) {
       const validation = safeValidate(schema, request.params);
-      
+
       if (!validation.success) {
         return validationErrorResponse(
           reply,
@@ -186,7 +192,7 @@ export const ValidateParams = <T extends z.ZodTypeAny>(schema: T) => {
           formatValidationErrors(validation.error)
         );
       }
-      
+
       request.params = validation.data;
       return originalMethod.call(this, request, reply);
     };

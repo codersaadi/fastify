@@ -1,6 +1,7 @@
-import pino, { Logger } from 'pino';
 import { config } from '@/config/env';
+
 import { FastifyReply, FastifyRequest } from 'fastify';
+import pino from 'pino';
 
 // Create base logger options
 const baseLoggerOptions = {
@@ -8,7 +9,7 @@ const baseLoggerOptions = {
   formatters: {
     level: (label: string) => {
       return { level: label };
-    },
+    }
   },
   timestamp: pino.stdTimeFunctions.isoTime,
   redact: {
@@ -19,19 +20,19 @@ const baseLoggerOptions = {
       'password',
       'token',
       'secret',
-      'key',
+      'key'
     ],
-    censor: '[REDACTED]',
+    censor: '[REDACTED]'
   },
   serializers: {
     req: pino.stdSerializers.req,
     res: pino.stdSerializers.res,
-    err: pino.stdSerializers.err,
-  },
+    err: pino.stdSerializers.err
+  }
 };
 
 // Conditionally add transport only when needed
-const loggerOptions = config.NODE_ENV === 'development' && config.LOG_PRETTY 
+const loggerOptions = config.NODE_ENV === 'development' && config.LOG_PRETTY
   ? {
       ...baseLoggerOptions,
       transport: {
@@ -39,13 +40,13 @@ const loggerOptions = config.NODE_ENV === 'development' && config.LOG_PRETTY
         options: {
           colorize: true,
           translateTime: 'HH:MM:ss Z',
-          ignore: 'pid,hostname',
-        },
-      },
+          ignore: 'pid,hostname'
+        }
+      }
     }
   : baseLoggerOptions;
 
-export const logger = pino(loggerOptions) satisfies Logger<any,boolean>;
+export const logger = pino(loggerOptions) ;
 
 // Custom log methods for common use cases
 export const logRequest = (req: FastifyRequest, message?: string) => {
@@ -55,8 +56,8 @@ export const logRequest = (req: FastifyRequest, message?: string) => {
       url: req.url,
       headers: req.headers,
       remoteAddress: req.ip,
-      remotePort: req.socket?.remotePort,
-    },
+      remotePort: req.socket?.remotePort
+    }
   }, message || 'Request received');
 };
 
@@ -64,15 +65,15 @@ export const logResponse = (res: FastifyReply, message?: string) => {
   logger.info({
     res: {
       statusCode: res.statusCode,
-      headers: res.getHeaders(),
-    },
+      headers: res.getHeaders()
+    }
   }, message || 'Response sent');
 };
 
 export const logError = (error: Error, context?: Record<string, unknown>) => {
   logger.error({
     err: error,
-    context,
+    context
   }, 'Error occurred');
 };
 
@@ -80,6 +81,6 @@ export const logPerformance = (operation: string, duration: number, metadata?: R
   logger.info({
     operation,
     duration,
-    metadata,
+    metadata
   }, `Performance: ${operation} took ${duration}ms`);
 };

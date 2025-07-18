@@ -1,18 +1,19 @@
-import { FastifyReply } from 'fastify';
 import { ApiResponse, ErrorResponse, PaginatedResponse } from '@/types/global';
+
+import { FastifyReply } from 'fastify';
 
 // Success response helper
 export const successResponse = <T>(
   reply: FastifyReply,
   data: T,
-  message: string = "",
+  message: string = '',
   statusCode = 200
 ): FastifyReply => {
   const response: ApiResponse<T> = {
     success: true,
     data,
     message,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
 
   return reply.code(statusCode).send(response);
@@ -31,7 +32,7 @@ export const errorResponse = (
     message,
     statusCode,
     timestamp: new Date().toISOString(),
-    path,
+    path
   };
 
   return reply.code(statusCode).send(response);
@@ -58,8 +59,8 @@ export const paginatedResponse = <T>(
       total,
       totalPages,
       hasNext,
-      hasPrev,
-    },
+      hasPrev
+    }
   };
 
   return reply.code(statusCode).send(response);
@@ -71,10 +72,10 @@ export const notFoundResponse = (
   resource = 'Resource',
   id?: string
 ): FastifyReply => {
-  const message = id 
+  const message = id
     ? `${resource} with ID ${id} not found`
     : `${resource} not found`;
-  
+
   return errorResponse(reply, 'Not Found', message, 404);
 };
 
@@ -88,7 +89,7 @@ export const validationErrorResponse = (
     message,
     statusCode: 400,
     timestamp: new Date().toISOString(),
-    details,
+    details
   };
 
   return reply.code(400).send(response);
@@ -136,17 +137,17 @@ export const withTiming = async <T>(
   operationName?: string
 ): Promise<T> => {
   const start = Date.now();
-  
+
   try {
     const result = await operation();
     const duration = Date.now() - start;
-    
+
     reply.header('X-Response-Time', `${duration}ms`);
-    
+
     if (operationName) {
       reply.header('X-Operation', operationName);
     }
-    
+
     return result;
   } catch (error) {
     const duration = Date.now() - start;
