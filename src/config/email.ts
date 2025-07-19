@@ -5,17 +5,18 @@ export const getEmailEnv = () => {
     server: {
       // Common
       EMAIL_PROVIDER: z
-        .enum(['resend', 'nodemailer', 'ses', 'custom'])
+        .enum([
+          'resend',
+          'nodemailer',
+          'ses',
+          'custom'
+        ])
         .default('resend')
-        .describe(
-          'The email provider to use: resend, nodemailer (for generic SMTP), ses (AWS), or custom.'
-        ),
+        .describe('The email provider to use: resend, nodemailer (for generic SMTP), ses (AWS), or custom.'),
       EMAIL_FROM: z
         .string()
         .email()
-        .describe(
-          "The 'From' address for outgoing emails. Must be a verified identity in the chosen provider (e.g., a verified domain/email in AWS SES)."
-        ),
+        .describe("The 'From' address for outgoing emails. Must be a verified identity in the chosen provider (e.g., a verified domain/email in AWS SES)."),
 
       // Resend specific
       RESEND_KEY: z
@@ -48,9 +49,7 @@ export const getEmailEnv = () => {
         .boolean()
         .default(true)
         .optional()
-        .describe(
-          'Use TLS for SMTP. Defaults to true. Port 465 typically uses true, port 587 typically uses false (with STARTTLS).'
-        ),
+        .describe('Use TLS for SMTP. Defaults to true. Port 465 typically uses true, port 587 typically uses false (with STARTTLS).'),
 
       // AWS SES specific
       AWS_SES_REGION: z
@@ -60,27 +59,19 @@ export const getEmailEnv = () => {
       AWS_SES_ACCESS_KEY_ID: z
         .string()
         .optional()
-        .describe(
-          "AWS Access Key ID for SES. Required if EMAIL_PROVIDER is 'ses' and not using IAM roles."
-        ),
+        .describe("AWS Access Key ID for SES. Required if EMAIL_PROVIDER is 'ses' and not using IAM roles."),
       AWS_SES_SECRET_ACCESS_KEY: z
         .string()
         .optional()
-        .describe(
-          "AWS Secret Access Key for SES. Required if EMAIL_PROVIDER is 'ses' and not using IAM roles."
-        ),
+        .describe("AWS Secret Access Key for SES. Required if EMAIL_PROVIDER is 'ses' and not using IAM roles."),
       AWS_SES_CONFIGURATION_SET_NAME: z
         .string()
         .optional()
-        .describe(
-          'Optional: AWS SES Configuration Set name for advanced tracking and deliverability features.'
-        ),
+        .describe('Optional: AWS SES Configuration Set name for advanced tracking and deliverability features.'),
       AWS_SES_FROM_ARN: z // <<< ADDED HERE
         .string()
         .optional()
-        .describe(
-          'Optional: The ARN of the identity that is associated with the sending authorization policy. Used for cross-account sending or specific identity authorization.'
-        ),
+        .describe('Optional: The ARN of the identity that is associated with the sending authorization policy. Used for cross-account sending or specific identity authorization.')
     },
     runtimeEnv: {
       EMAIL_PROVIDER: process.env.EMAIL_PROVIDER,
@@ -100,9 +91,9 @@ export const getEmailEnv = () => {
       AWS_SES_SECRET_ACCESS_KEY: process.env.AWS_SES_SECRET_ACCESS_KEY,
       AWS_SES_CONFIGURATION_SET_NAME:
         process.env.AWS_SES_CONFIGURATION_SET_NAME,
-      AWS_SES_FROM_ARN: process.env.AWS_SES_FROM_ARN, // <<< ADDED HERE
+      AWS_SES_FROM_ARN: process.env.AWS_SES_FROM_ARN // <<< ADDED HERE
     },
-    emptyStringAsUndefined: true,
+    emptyStringAsUndefined: true
   });
 
   // --- This custom validation block can be replaced by Zod's .superRefine() ---
@@ -133,9 +124,7 @@ export const getEmailEnv = () => {
       // This check is imperfect for IAM roles outside these common services, but a general guide.
       // A more robust check would involve attempting to get credentials via the SDK's default provider chain.
       // For simplicity in env validation, explicit keys are often preferred unless a clear IAM role context is established.
-      errors.push(
-        'AWS_SES_ACCESS_KEY_ID is required for SES if not using assumed IAM roles in a recognized AWS compute environment.'
-      );
+      errors.push('AWS_SES_ACCESS_KEY_ID is required for SES if not using assumed IAM roles in a recognized AWS compute environment.');
     }
     if (
       !env.AWS_SES_SECRET_ACCESS_KEY &&
@@ -143,21 +132,15 @@ export const getEmailEnv = () => {
       !process.env.ECS_CONTAINER_METADATA_URI &&
       !process.env.EC2_INSTANCE_ID
     ) {
-      errors.push(
-        'AWS_SES_SECRET_ACCESS_KEY is required for SES if not using assumed IAM roles in a recognized AWS compute environment.'
-      );
+      errors.push('AWS_SES_SECRET_ACCESS_KEY is required for SES if not using assumed IAM roles in a recognized AWS compute environment.');
     }
     // AWS_SES_FROM_ARN is optional, so no validation needed here unless it has dependencies.
   }
 
   if (errors.length > 0) {
     // biome-ignore lint/suspicious/noConsole: Intended for startup error visibility
-    console.error(
-      `\n❌ Email Environment Validation Failed:\n${errors.map((e) => `  - ${e}`).join('\n')}\n`
-    );
-    throw new Error(
-      'Email environment validation failed. Check console for details.'
-    );
+    console.error(`\n❌ Email Environment Validation Failed:\n${errors.map((e) => `  - ${e}`).join('\n')}\n`);
+    throw new Error('Email environment validation failed. Check console for details.');
   }
   // --- End of custom validation block ---
 

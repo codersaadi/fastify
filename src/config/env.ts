@@ -2,8 +2,14 @@ import { createEnv } from '@t3-oss/env-core';
 import { configDotenv } from 'dotenv';
 import { z } from 'zod';
 configDotenv({
-  path : ['.env', '.env.development', '.env.test', '.env.production', '.env.local']
-})
+  path: [
+    '.env',
+    '.env.development',
+    '.env.test',
+    '.env.production',
+    '.env.local'
+  ]
+});
 export const env = createEnv({
   /**
    * Server-side environment variables, not available on the client.
@@ -11,50 +17,87 @@ export const env = createEnv({
    */
   server: {
     // Server configuration
-    NODE_ENV: z.enum(['development', 'production', 'test']).optional().default('development'),
-    PORT: z.coerce.number().min(1).max(65535).default(3000),
-    HOST: z.string().min(1).default('localhost'),
+    NODE_ENV: z.enum([
+      'development',
+      'production',
+      'test'
+    ]).optional()
+      .default('development'),
+    PORT: z.coerce.number().min(1)
+      .max(65535)
+      .default(3000),
+    HOST: z.string().min(1)
+      .default('localhost'),
 
     // Logging configuration
-    LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
+    LOG_LEVEL: z.enum([
+      'fatal',
+      'error',
+      'warn',
+      'info',
+      'debug',
+      'trace'
+    ]).default('info'),
     LOG_PRETTY: z.coerce.boolean().default(true),
 
     // Security & CORS
-    CORS_ORIGIN: z.string().url().default('http://localhost:3000'),
+    CORS_ORIGIN: z.string().url()
+      .default('http://localhost:3000'),
     TRUSTED_ORIGINS: z.string().optional(),
 
     // Rate limiting
-    RATE_LIMIT_MAX: z.coerce.number().positive().default(100),
-    RATE_LIMIT_WINDOW: z.coerce.number().positive().default(60000),
+    RATE_LIMIT_MAX: z.coerce.number().positive()
+      .default(100),
+    RATE_LIMIT_WINDOW: z.coerce.number().positive()
+      .default(60000),
 
     // Health checks
-    HEALTH_CHECK_INTERVAL: z.coerce.number().positive().default(30000),
+    HEALTH_CHECK_INTERVAL: z.coerce.number().positive()
+      .default(30000),
 
     // Database configuration
-    DATABASE_URL: z.string().url().optional(),
-    DB_HOST: z.string().min(1).default('localhost'),
-    DB_PORT: z.coerce.number().min(1).max(65535).default(5432),
-    DB_NAME: z.string().min(1).default('fastify_app'),
-    DB_USER: z.string().min(1).default('postgres'),
-    DB_PASSWORD: z.string().min(1).default('postgres'),
+    DATABASE_URL: z.string().url()
+      .optional(),
+    DB_HOST: z.string().min(1)
+      .default('localhost'),
+    DB_PORT: z.coerce.number().min(1)
+      .max(65535)
+      .default(5432),
+    DB_NAME: z.string().min(1)
+      .default('fastify_app'),
+    DB_USER: z.string().min(1)
+      .default('postgres'),
+    DB_PASSWORD: z.string().min(1)
+      .default('postgres'),
     DB_SSL: z.coerce.boolean().default(false),
-    DB_POOL_MIN: z.coerce.number().min(0).default(2),
-    DB_POOL_MAX: z.coerce.number().min(1).default(10),
-    DB_CONNECTION_TIMEOUT: z.coerce.number().positive().default(30000),
-    DB_IDLE_TIMEOUT: z.coerce.number().positive().default(30000),
+    DB_POOL_MIN: z.coerce.number().min(0)
+      .default(2),
+    DB_POOL_MAX: z.coerce.number().min(1)
+      .default(10),
+    DB_CONNECTION_TIMEOUT: z.coerce.number().positive()
+      .default(30000),
+    DB_IDLE_TIMEOUT: z.coerce.number().positive()
+      .default(30000),
 
     // Redis configuration
     ENABLE_REDIS: z.coerce.boolean().default(false),
-    REDIS_URL: z.string().url().optional(),
-    REDIS_HOST: z.string().min(1).default('localhost'),
-    REDIS_PORT: z.coerce.number().min(1).max(65535).default(6379),
+    REDIS_URL: z.string().url()
+      .optional(),
+    REDIS_HOST: z.string().min(1)
+      .default('localhost'),
+    REDIS_PORT: z.coerce.number().min(1)
+      .max(65535)
+      .default(6379),
     REDIS_PASSWORD: z.string().optional(),
-    REDIS_DB: z.coerce.number().min(0).default(0),
+    REDIS_DB: z.coerce.number().min(0)
+      .default(0),
     REDIS_USERNAME: z.string().optional(),
 
     // API configuration
-    API_VERSION: z.string().regex(/^v\d+$/).default('v1'),
-    API_PREFIX: z.string().regex(/^\//).default('/api'),
+    API_VERSION: z.string().regex(/^v\d+$/)
+      .default('v1'),
+    API_PREFIX: z.string().regex(/^\//)
+      .default('/api'),
 
     // Auth configuration
     BETTER_AUTH_SECRET: z.string().min(32, 'Auth secret must be at least 32 characters'),
@@ -136,7 +179,7 @@ export const env = createEnv({
     DISABLE_SIGNUP: z.coerce.boolean().default(false),
 
     // WebSocket
-    ENABLE_WEBSOCKET: z.coerce.boolean().default(false),
+    ENABLE_WEBSOCKET: z.coerce.boolean().default(false)
   },
 
   /**
@@ -153,7 +196,11 @@ export const env = createEnv({
    * 💡 You'll get type errors if these are not prefixed with NEXT_PUBLIC_.
    */
   shared: {
-    NODE_ENV: z.enum(['development', 'production', 'test']).optional(),
+    NODE_ENV: z.enum([
+      'development',
+      'production',
+      'test'
+    ]).optional()
   },
 
   /**
@@ -189,7 +236,7 @@ export const env = createEnv({
   onValidationError: (issues) => {
     console.error(
       '❌ Invalid environment variables:',
-      issues,
+      issues
     );
     throw new Error('Invalid environment variables');
   },
@@ -198,10 +245,8 @@ export const env = createEnv({
    * Called when a server-side environment variable is accessed on the client.
    */
   onInvalidAccess: (variable: string) => {
-    throw new Error(
-      `❌ Attempted to access a server-side environment variable on the client: ${variable}`,
-    );
-  },
+    throw new Error(`❌ Attempted to access a server-side environment variable on the client: ${variable}`);
+  }
 });
 
 // Enhanced utility functions with better type safety
@@ -241,12 +286,12 @@ export const getDatabaseConfig = () => ({
   ssl: env.DB_SSL,
   pool: {
     min: env.DB_POOL_MIN,
-    max: env.DB_POOL_MAX,
+    max: env.DB_POOL_MAX
   },
   connection: {
     connectionTimeoutMillis: env.DB_CONNECTION_TIMEOUT,
-    idleTimeoutMillis: env.DB_IDLE_TIMEOUT,
-  },
+    idleTimeoutMillis: env.DB_IDLE_TIMEOUT
+  }
 });
 
 export const getRedisConfig = () => ({
@@ -255,7 +300,7 @@ export const getRedisConfig = () => ({
   port: env.REDIS_PORT,
   password: env.REDIS_PASSWORD,
   db: env.REDIS_DB,
-  username: env.REDIS_USERNAME,
+  username: env.REDIS_USERNAME
 });
 
 export const getServerConfig = () => ({
@@ -263,11 +308,11 @@ export const getServerConfig = () => ({
   port: env.PORT,
   cors: {
     origin: getAllTrustedOrigins(),
-    credentials: true,
+    credentials: true
   },
   rateLimit: {
     max: env.RATE_LIMIT_MAX,
-    timeWindow: env.RATE_LIMIT_WINDOW,
+    timeWindow: env.RATE_LIMIT_WINDOW
   },
   logger: {
     level: env.LOG_LEVEL,
@@ -277,19 +322,19 @@ export const getServerConfig = () => ({
           options: {
             colorize: true,
             translateTime: 'HH:MM:ss Z',
-            ignore: 'pid,hostname',
-          },
+            ignore: 'pid,hostname'
+          }
         }
-      : undefined,
-  },
+      : undefined
+  }
 });
 
 export const getApiConfig = () => ({
   version: env.API_VERSION,
   prefix: env.API_PREFIX,
   healthCheck: {
-    interval: env.HEALTH_CHECK_INTERVAL,
-  },
+    interval: env.HEALTH_CHECK_INTERVAL
+  }
 });
 
 // Enhanced trusted origins handling
@@ -303,7 +348,7 @@ export const getTrustedOriginsFromEnv = (): string[] => {
     .map((origin) => origin.trim())
     .filter((origin) => {
       if (!origin) return false;
-      
+
       try {
         new URL(origin);
         return true;
@@ -351,7 +396,7 @@ export const getConfiguredOAuthProviders = (): string[] => {
     const clientSecretKey = `${provider.toUpperCase()}_CLIENT_SECRET` as keyof typeof env;
 
     const hasCredentials = env[clientIdKey] && env[clientSecretKey];
-    
+
     if (!hasCredentials) {
       console.warn(`⚠️  OAuth provider "${provider}" is configured but missing credentials`);
       return false;

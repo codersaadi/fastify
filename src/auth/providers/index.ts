@@ -39,8 +39,8 @@ export const allProviders = {
 export type ProviderName = keyof typeof allProviders;
 export type ProviderConfig = typeof allProviders[ProviderName];
 
-
-
-export { getAuthProviders, 
+export {
+  getAuthProviders,
   getEnabledProviderNames,
-  getProviderConfig, isProviderEnabled, type AuthConfigError, type AuthProvider } from './provider_helpers.js'
+  getProviderConfig, isProviderEnabled, type AuthConfigError, type AuthProvider
+} from './provider_helpers.js';

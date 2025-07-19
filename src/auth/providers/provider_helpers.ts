@@ -1,5 +1,6 @@
-import { env } from "@/config/env";
-import { allProviders, ProviderConfig, ProviderName } from ".";
+import { env } from '@/config/env';
+
+import { allProviders, ProviderConfig, ProviderName } from '.';
 
 export type AuthProvider = {
   name: ProviderName;
@@ -35,7 +36,7 @@ const parseAuthProviders = (providerString?: string): ProviderName[] => {
   return providers;
 };
 
- const getAuthProviders = (): Record<string, ProviderConfig> => {
+const getAuthProviders = (): Record<string, ProviderConfig> => {
   const enabledProviderNames = parseAuthProviders(env.AUTH_PROVIDERS);
 
   if (enabledProviderNames.length === 0) {
@@ -65,17 +66,17 @@ const parseAuthProviders = (providerString?: string): ProviderName[] => {
   }, {} as Record<string, ProviderConfig>);
 };
 
- const getEnabledProviderNames = (): ProviderName[] => {
+const getEnabledProviderNames = (): ProviderName[] => {
   return parseAuthProviders(env.AUTH_PROVIDERS);
 };
 
- const isProviderEnabled = (providerName: ProviderName): boolean => {
+const isProviderEnabled = (providerName: ProviderName): boolean => {
   const enabledProviders = getEnabledProviderNames();
   return enabledProviders.includes(providerName);
 };
 
 // Utility to get a specific provider config
- const getProviderConfig = <T extends ProviderName>(
+const getProviderConfig = <T extends ProviderName>(
   providerName: T
 ): ProviderConfig | null => {
   if (!isProviderEnabled(providerName)) {
@@ -83,4 +84,4 @@ const parseAuthProviders = (providerString?: string): ProviderName[] => {
   }
   return allProviders[providerName];
 };
-export {getAuthProviders, getEnabledProviderNames , getProviderConfig , isProviderEnabled }
+export { getAuthProviders, getEnabledProviderNames, getProviderConfig, isProviderEnabled };

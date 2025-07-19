@@ -1,14 +1,14 @@
 import { isWebSocketEnabled } from '@/config/env';
+import { AppRouter, appRouter, createTRPCContext } from '@repo/api';
 
 import { fastifyTRPCPlugin, FastifyTRPCPluginOptions } from '@trpc/server/adapters/fastify';
 import type { FastifyInstance, FastifyPluginAsync } from 'fastify';
 import fp from 'fastify-plugin';
 
-import { AppRouter, appRouter , createTRPCContext} from '@repo/api';
 const trpcPrefix: string = '/api/trpc';
 
 const trpcPlugin: FastifyPluginAsync = async (fastify: FastifyInstance) => {
-const isWebSocket = isWebSocketEnabled()
+  const isWebSocket = isWebSocketEnabled();
   await fastify.register(fastifyTRPCPlugin, {
     useWSS: isWebSocket,
     keepAlive: isWebSocket
