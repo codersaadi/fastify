@@ -11,12 +11,13 @@ export const getEmailEnv = () => {
           'ses',
           'custom'
         ])
-        .default('resend')
-        .describe('The email provider to use: resend, nodemailer (for generic SMTP), ses (AWS), or custom.'),
+        .describe('The email provider to use: resend, nodemailer (for generic SMTP), ses (AWS), or custom.')
+        .optional(),
       EMAIL_FROM: z
         .string()
         .email()
-        .describe("The 'From' address for outgoing emails. Must be a verified identity in the chosen provider (e.g., a verified domain/email in AWS SES)."),
+        .describe("The 'From' address for outgoing emails. Must be a verified identity in the chosen provider (e.g., a verified domain/email in AWS SES).")
+        .optional(),
 
       // Resend specific
       RESEND_KEY: z

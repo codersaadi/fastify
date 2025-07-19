@@ -29,6 +29,10 @@ export const env = createEnv({
     HOST: z.string().min(1)
       .default('localhost'),
 
+    // App configuration
+    APP_NAME: z.string().min(1)
+      .default('FastifyAuth'),
+
     // Logging configuration
     LOG_LEVEL: z.enum([
       'fatal',
@@ -103,6 +107,10 @@ export const env = createEnv({
     BETTER_AUTH_SECRET: z.string().min(32, 'Auth secret must be at least 32 characters'),
     BETTER_AUTH_URL: z.string().url(),
 
+    // Admin configuration
+    ADMIN_EMAILS: z.string().optional(),
+    ENABLE_ADMIN_UI: z.coerce.boolean().default(false),
+
     // OAuth providers - Google
     GOOGLE_CLIENT_ID: z.string().optional(),
     GOOGLE_CLIENT_SECRET: z.string().optional(),
@@ -173,10 +181,143 @@ export const env = createEnv({
     SPOTIFY_CLIENT_ID: z.string().optional(),
     SPOTIFY_CLIENT_SECRET: z.string().optional(),
 
+    // OAuth providers - Roblox
+    ROBLOX_CLIENT_ID: z.string().optional(),
+    ROBLOX_CLIENT_SECRET: z.string().optional(),
+
     // Auth features
     AUTH_PROVIDERS: z.string().optional(),
     ENABLE_EMAIL_PASSWORD: z.coerce.boolean().default(false),
     DISABLE_SIGNUP: z.coerce.boolean().default(false),
+
+    // Password policies
+    MIN_PASSWORD_LENGTH: z.coerce.number().min(1)
+      .default(8),
+    MAX_PASSWORD_LENGTH: z.coerce.number().min(1)
+      .default(128),
+    REQUIRE_LOWERCASE: z.coerce.boolean().default(true),
+    REQUIRE_UPPERCASE: z.coerce.boolean().default(true),
+    REQUIRE_NUMBERS: z.coerce.boolean().default(true),
+    REQUIRE_SPECIAL_CHARS: z.coerce.boolean().default(true),
+    REQUIRE_EMAIL_VERIFICATION: z.coerce.boolean().default(true),
+    // JWT configuration
+    JWT_ISSUER: z.string().url()
+      .optional(),
+    JWT_AUDIENCE: z.string().optional(),
+
+    // Cookie configuration
+    COOKIE_PREFIX: z.string().min(1)
+      .default('fastify-auth'),
+    COOKIE_DOMAIN: z.string().optional(),
+    ENABLE_CROSS_SUBDOMAIN_COOKIES: z.coerce.boolean().default(false),
+
+    // Additional trusted origins
+    ADDITIONAL_TRUSTED_ORIGINS: z.string().optional(),
+
+    // Feature flags
+    ENABLE_AUDIT_LOG: z.coerce.boolean().default(false),
+    ENABLE_TWO_FACTOR: z.coerce.boolean().default(true),
+    ENABLE_MAGIC_LINK: z.coerce.boolean().default(false),
+    ENABLE_PHONE_AUTH: z.coerce.boolean().default(false),
+    ENABLE_MULTI_SESSION: z.coerce.boolean().default(true),
+    ENABLE_JWT: z.coerce.boolean().default(false),
+    ENABLE_ONE_TAP: z.coerce.boolean().default(false),
+    ENABLE_USERNAME: z.coerce.boolean().default(false),
+    ENABLE_OTP: z.coerce.boolean().default(false),
+
+    // OTP Configuration
+    OTP_LENGTH: z.coerce.number().min(4)
+      .max(8)
+      .default(6),
+    OTP_EXPIRY_MINUTES: z.coerce.number().min(1)
+      .max(60)
+      .default(5),
+    OTP_MAX_ATTEMPTS: z.coerce.number().min(1)
+      .max(10)
+      .default(3),
+
+    // Magic Link Configuration
+    MAGIC_LINK_EXPIRY_MINUTES: z.coerce.number().min(1)
+      .max(120)
+      .default(15),
+
+    // Phone Authentication Configuration
+    PHONE_OTP_LENGTH: z.coerce.number().min(4)
+      .max(8)
+      .default(6),
+    PHONE_OTP_EXPIRY_MINUTES: z.coerce.number().min(1)
+      .max(30)
+      .default(5),
+    PHONE_DEFAULT_COUNTRY: z.string().length(2)
+      .default('US'),
+
+    // Session Configuration
+    SESSION_MAX_AGE_DAYS: z.coerce.number().min(1)
+      .max(365)
+      .default(7),
+    SESSION_UPDATE_AGE_HOURS: z.coerce.number().min(1)
+      .max(24)
+      .default(24),
+    SESSION_COOKIE_CACHE_MINUTES: z.coerce.number().min(1)
+      .max(60)
+      .default(5),
+    SESSION_FRESH_AGE_MINUTES: z.coerce.number().min(1)
+      .max(120)
+      .default(15),
+
+    // Multi-session Configuration
+    MAX_SESSIONS_PER_USER: z.coerce.number().min(1)
+      .max(50)
+      .default(10),
+
+    // Security Configuration
+    ENABLE_RATE_LIMITING: z.coerce.boolean().default(true),
+    RATE_LIMIT_SKIP_SUCCESSFUL_REQUESTS: z.coerce.boolean().default(false),
+    RATE_LIMIT_SKIP_FAILED_REQUESTS: z.coerce.boolean().default(false),
+
+    // Audit Configuration
+    // AUDIT_LOG_RETENTION_DAYS: z.coerce.number().min(1).max(365).default(90),
+    // ENABLE_LOGIN_AUDIT: z.coerce.boolean().default(true),
+    // ENABLE_SIGNUP_AUDIT: z.coerce.boolean().default(true),
+    // ENABLE_PASSWORD_CHANGE_AUDIT: z.coerce.boolean().default(true),
+
+    // Development/Debug Configuration
+    ENABLE_AUTH_DEBUG: z.coerce.boolean().default(false),
+    AUTH_DEBUG_LEVEL: z.enum([
+      'error',
+      'warn',
+      'info',
+      'debug'
+    ]).default('info'),
+
+    // Webhook Configuration (for external integrations)
+    // AUTH_WEBHOOK_URL: z.string().url().optional(),
+    // AUTH_WEBHOOK_SECRET: z.string().min(32).optional(),
+    // ENABLE_AUTH_WEBHOOKS: z.coerce.boolean().default(false),
+
+    // Error tracking
+    ERROR_TRACKING_DSN: z.string().url()
+      .optional(),
+
+    // Email service configuration (for magic links, verification, etc.)
+    EMAIL_FROM: z.string().email()
+      .optional(),
+    EMAIL_FROM_NAME: z.string().optional(),
+
+    // SMS service configuration (for phone auth)
+    SMS_PROVIDER: z.enum([
+      'twilio',
+      'aws-sns',
+      'custom'
+    ]).optional(),
+    TWILIO_ACCOUNT_SID: z.string().optional(),
+    TWILIO_AUTH_TOKEN: z.string().optional(),
+    TWILIO_PHONE_NUMBER: z.string().optional(),
+
+    // // AWS SNS configuration
+    // AWS_ACCESS_KEY_ID: z.string().optional(),
+    // AWS_SECRET_ACCESS_KEY: z.string().optional(),
+    // AWS_REGION: z.string().optional(),
 
     // WebSocket
     ENABLE_WEBSOCKET: z.coerce.boolean().default(false)

@@ -27,6 +27,8 @@
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
     "baseUrl": "./src",
+      
+    "jsx": "react-jsx",
     "paths": {
       "@/*": ["./*"]
     }
