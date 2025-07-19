@@ -1,5 +1,5 @@
-import { createTRPCRouter, publicProcedure } from '@/plugins/trpc/trpc';
-import { trpcHealthRoute } from '@/routers/health';
+import { createTRPCRouter, publicProcedure } from './trpc';
+import { trpcHealthRoute } from './routers/health';
 export const appRouter = createTRPCRouter({
   health: trpcHealthRoute(),
   random: publicProcedure.subscription(async function * () {

@@ -1,4 +1,4 @@
-import { publicProcedure } from '@/plugins/trpc/trpc';
+import { publicProcedure } from '../trpc';
 
 export const trpcHealthRoute = () => publicProcedure.query(() => {
   return {

@@ -1,4 +1,5 @@
 import { EnvConfig } from '@/config/env';
+import { AuthResult } from '@/decorators/session.decorator';
 
 import { FastifyRequest, FastifyReply } from 'fastify';
 
@@ -8,7 +9,10 @@ declare module 'fastify' {
     config: EnvConfig;
   }
 }
-
+// Extended FastifyRequest with auth decorator
+export interface AuthenticatedRequest extends FastifyRequest {
+  auth: AuthResult | null;
+}
 // Common response types
 export interface ApiResponse<T = unknown> {
   success: boolean;

@@ -1,15 +1,8 @@
-import { AuthResult, getSessionDecorator } from '@/decorators/session.decorator';
-
+import { getSessionDecorator } from '@/decorators/session.decorator';
 import { initTRPC, TRPCError } from '@trpc/server';
 import { CreateFastifyContextOptions } from '@trpc/server/adapters/fastify';
-import { FastifyRequest } from 'fastify';
 import superjson from 'superjson';
 import { ZodError } from 'zod';
-
-// Extended FastifyRequest with auth decorator
-export interface AuthenticatedRequest extends FastifyRequest {
-  auth: AuthResult | null;
-}
 
 // Create context for tRPC
 export const createTRPCContext = async ({

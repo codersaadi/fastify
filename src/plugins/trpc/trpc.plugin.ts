@@ -4,8 +4,7 @@ import { fastifyTRPCPlugin, FastifyTRPCPluginOptions } from '@trpc/server/adapte
 import type { FastifyInstance, FastifyPluginAsync } from 'fastify';
 import fp from 'fastify-plugin';
 
-import { AppRouter, appRouter } from './router';
-import { createTRPCContext } from './trpc';
+import { AppRouter, appRouter , createTRPCContext} from '@repo/api';
 const trpcPrefix: string = '/api/trpc';
 
 const trpcPlugin: FastifyPluginAsync = async (fastify: FastifyInstance) => {
