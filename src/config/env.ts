@@ -32,6 +32,8 @@ const envSchema = z.object({
   // Security & CORS
   CORS_ORIGIN: z.string().url()
     .default('http://localhost:3000'),
+  TRUSTED_ORIGINS: z.string().optional(),
+
   RATE_LIMIT_MAX: z.coerce.number().positive()
     .default(100),
   RATE_LIMIT_WINDOW: z.coerce.number().positive()
@@ -170,6 +172,19 @@ const parseEnv = (): EnvConfig => {
       }
     }
 
+     // Additional validation for trusted origins
+    if (parsed.TRUSTED_ORIGINS) {
+      const origins = parsed.TRUSTED_ORIGINS.split(',').map(origin => origin.trim());
+      
+      for (const origin of origins) {
+        try {
+          new URL(origin);
+        } catch {
+          throw new ConfigurationError(`Invalid URL in TRUSTED_ORIGINS: ${origin}`);
+        }
+      }
+    }
+
     return parsed;
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -270,3 +285,41 @@ export const getApiConfig = () => ({
     interval: env.HEALTH_CHECK_INTERVAL
   }
 });
+
+
+
+/**
+ * Parse trusted origins from environment variable
+ * @returns Array of trusted origin URLs
+ */
+export const getTrustedOriginsFromEnv = (): string[] => {
+  if (!env.TRUSTED_ORIGINS) {
+    return [];
+  }
+  
+  return env.TRUSTED_ORIGINS
+    .split(',')
+    .map(origin => origin.trim())
+    .filter(origin => origin.length > 0);
+};
+
+/**
+ * Get all configured trusted origins including CORS origin
+ * @returns Array of all trusted origins
+ */
+export const getAllTrustedOrigins = (): string[] => {
+  const origins = new Set<string>();
+  
+  // Add CORS origin
+  origins.add(env.CORS_ORIGIN);
+  
+  // Add BETTER_AUTH_URL if configured
+  if (env.BETTER_AUTH_URL) {
+    origins.add(env.BETTER_AUTH_URL);
+  }
+  
+  // Add additional trusted origins
+  getTrustedOriginsFromEnv().forEach(origin => origins.add(origin));
+  
+  return Array.from(origins);
+};

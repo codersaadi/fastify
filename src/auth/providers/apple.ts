@@ -4,9 +4,9 @@ import type { AppleOptions } from 'better-auth/social-providers';
 
 export const apple: AppleOptions = {
   clientId: env.APPLE_CLIENT_ID!,
-  clientSecret: env.APPLE_CLIENT_SECRET!
+  clientSecret: env.APPLE_CLIENT_SECRET!,
+  // Optional
+  appBundleIdentifier: process.env.APPLE_APP_BUNDLE_IDENTIFIER as string,
 };
 
-export const trustedOrigins = [
-  "https://appleid.apple.com"
-]
+

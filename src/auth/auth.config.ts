@@ -2,11 +2,10 @@ import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { admin, openAPI } from 'better-auth/plugins';
 
-import { getAuthProviders, ProviderConfig } from './providers';
+import { getAuthProviders, isProviderEnabled, ProviderConfig } from './providers';
 
 import { db } from '../db/index';
-import { env } from '@/config/env';
-
+import { env, getTrustedOriginsFromEnv } from '@/config/env';
 const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: 'pg',
@@ -42,7 +41,13 @@ const auth = betterAuth({
     database: {
       generateId: false
     }
-  }
+  },
+  trustedOrigins : [
+  isProviderEnabled("apple") ? "https://appleid.apple.com" : null,
+  env.BETTER_AUTH_URL,
+  ...getTrustedOriginsFromEnv()
+].filter((origin): origin is string => origin !== null)
+
 });
 
 export type User = typeof auth.$Infer.Session.user;
