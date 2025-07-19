@@ -2,9 +2,9 @@
 import { config } from 'dotenv';
 import { z } from 'zod';
 
-// Load environment variables
-config({ path: './.env.local' });
-
+// Load environment variables from any .env file
+config({ path: ['.env', '.env.local', '.env.development', '.env.production', '.env.test'
+] });
 const envSchema = z.object({
   // Server configuration
   NODE_ENV: z.enum([
