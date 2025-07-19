@@ -46,6 +46,8 @@
     "@fastify/swagger": "^9.5.1",
     "@fastify/swagger-ui": "^5.2.3",
     "@fastify/under-pressure": "^9.0.3",
+    "@fastify/websocket": "^11.2.0",
+    "@trpc/server": "^11.4.3",
     "better-auth": "^1.2.12",
     "dotenv": "^17.2.0",
     "drizzle-kit": "^0.31.4",
@@ -58,6 +60,7 @@
     "pino": "^9.7.0",
     "pino-pretty": "^11.2.2",
     "pm2": "^6.0.8",
+    "superjson": "^2.2.2",
     "zod": "^3.23.8"
   },
   "devDependencies": {

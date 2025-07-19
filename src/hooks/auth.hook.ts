@@ -11,13 +11,11 @@ async function authHook (fastify: FastifyInstance) {
     const auth = await getAuthInstance(fastify).api.getSession({
       headers: fromNodeHeaders(req.headers)
     });
-
-    if (!auth?.user) {
-      return res.unauthorized('You must be logged in to access this resource.');
-    }
-
-    // Set auth on request object
+    console.log("auth hook is getting ", {auth});
+    
+   if (auth) {
     req.setDecorator('auth', auth);
+   } 
   });
 }
 

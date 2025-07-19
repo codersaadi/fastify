@@ -146,7 +146,9 @@ const envSchema = z.object({
   // ENABLE_2FA_AUTH : z.string().optional(),
 
   SPOTIFY_CLIENT_SECRET: z.string().optional(),
-  SPOTIFY_CLIENT_ID: z.string().optional()
+  SPOTIFY_CLIENT_ID: z.string().optional(),
+
+  ENABLE_WEBSOCKET : z.string().optional().default('false')
 });
 
 export type EnvConfig = z.infer<typeof envSchema>;
@@ -325,3 +327,6 @@ export const getAllTrustedOrigins = (): string[] => {
 
   return Array.from(origins);
 };
+
+
+export const isWebSocketEnabled = env.ENABLE_WEBSOCKET === "true"
