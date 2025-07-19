@@ -2,11 +2,11 @@ import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { admin, openAPI } from 'better-auth/plugins';
 
-import { getAuthProviders, isProviderEnabled, ProviderConfig } from './providers';
+import { getAuthProviders, isProviderEnabled } from './providers';
 
 import { db } from '../db/index';
 import { env, getTrustedOriginsFromEnv } from '@/config/env';
-const auth = betterAuth({
+export const authConfig = betterAuth({
   database: drizzleAdapter(db, {
     provider: 'pg',
     usePlural: true
@@ -31,10 +31,7 @@ const auth = betterAuth({
   },
   
 
-  socialProviders: getAuthProviders().reduce((acc, { name, config }) => {
-    acc[name] = config;
-    return acc;
-  }, {} as Record<string, ProviderConfig>),
+  socialProviders: getAuthProviders(),
 
   advanced: {
     cookiePrefix: 'code-fastify',
@@ -50,7 +47,6 @@ const auth = betterAuth({
 
 });
 
-export type User = typeof auth.$Infer.Session.user;
-export type Session = typeof auth.$Infer.Session;
+export type User = typeof authConfig.$Infer.Session.user;
+export type Session = typeof authConfig.$Infer.Session;
 
-export default auth;

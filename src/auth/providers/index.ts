@@ -75,11 +75,11 @@ const parseAuthProviders = (providerString?: string): ProviderName[] => {
   return providers;
 };
 
-export const getAuthProviders = (): AuthProvider[] => {
+export const getAuthProviders = (): Record<string ,ProviderConfig> => {
   const enabledProviderNames = parseAuthProviders(env.AUTH_PROVIDERS);
 
   if (enabledProviderNames.length === 0) {
-    return [];
+    return {};
   }
 
   const providers: AuthProvider[] = [];
@@ -99,8 +99,11 @@ export const getAuthProviders = (): AuthProvider[] => {
     });
   }
 
-  return providers;
-};
+  return providers.reduce((acc, { name, config }) => {
+    acc[name] = config;
+    return acc;
+  }, {} as Record<string, ProviderConfig>)
+}
 
 export const getEnabledProviderNames = (): ProviderName[] => {
   return parseAuthProviders(env.AUTH_PROVIDERS);
