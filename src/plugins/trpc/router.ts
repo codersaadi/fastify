@@ -1,8 +1,8 @@
-import { createTRPCRouter } from "@/plugins/trpc/trpc";
-import { trpcHealthRoute } from "@/routers/health";
+import { createTRPCRouter } from '@/plugins/trpc/trpc';
+import { trpcHealthRoute } from '@/routers/health';
 
 export const appRouter = createTRPCRouter({
-    health : trpcHealthRoute()
-})
+  health: trpcHealthRoute()
+});
 
-export type AppRouter = typeof appRouter
+export type AppRouter = typeof appRouter;

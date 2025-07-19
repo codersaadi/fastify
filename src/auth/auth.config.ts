@@ -14,10 +14,10 @@ export const authConfig = betterAuth({
   }),
   plugins: [
     admin(),
-    
+
     openAPI({
       path: '/docs'
-    }),
+    })
 
   ],
   session: {

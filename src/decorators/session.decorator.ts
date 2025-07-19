@@ -1,4 +1,5 @@
 import { auth } from '@/auth';
+
 import type { FastifyRequest } from 'fastify';
 
 export type AuthResult = Awaited<ReturnType<typeof auth.api.getSession>>;
@@ -8,7 +9,7 @@ export type AuthResult = Awaited<ReturnType<typeof auth.api.getSession>>;
  * @param request - The Fastify request object
  * @returns The authentication result containing session data
  */
-export function getSessionDecorator(request: FastifyRequest): AuthResult {
+export function getSessionDecorator (request: FastifyRequest): AuthResult {
   return request.getDecorator<AuthResult>('auth');
 }
 
@@ -17,7 +18,7 @@ export function getSessionDecorator(request: FastifyRequest): AuthResult {
  * @param authResult - The auth result to check
  * @returns True if the session is valid and user is authenticated
  */
-export function isAuthenticated(authResult: AuthResult): authResult is NonNullable<AuthResult> & { session: NonNullable<AuthResult>["session"] } {
+export function isAuthenticated (authResult: AuthResult): authResult is NonNullable<AuthResult> & { session: NonNullable<AuthResult>['session'] } {
   return authResult?.session !== null && authResult?.session !== undefined;
 }
 
@@ -26,7 +27,7 @@ export function isAuthenticated(authResult: AuthResult): authResult is NonNullab
  * @param request - The Fastify request object
  * @returns The user ID if authenticated, null otherwise
  */
-export function getUserId(request: FastifyRequest): string | null {
+export function getUserId (request: FastifyRequest): string | null {
   const authResult = getSessionDecorator(request);
   return isAuthenticated(authResult) ? authResult.session.userId : null;
 }
@@ -36,7 +37,7 @@ export function getUserId(request: FastifyRequest): string | null {
  * @param request - The Fastify request object
  * @returns The session ID if authenticated, null otherwise
  */
-export function getSessionId(request: FastifyRequest): string | null {
+export function getSessionId (request: FastifyRequest): string | null {
   const authResult = getSessionDecorator(request);
   return isAuthenticated(authResult) ? authResult.session.id : null;
 }
@@ -47,12 +48,12 @@ export function getSessionId(request: FastifyRequest): string | null {
  * @returns The authenticated session
  * @throws Will throw an error if not authenticated
  */
-export function requireAuth(request: FastifyRequest): NonNullable<AuthResult> & { session: NonNullable<AuthResult>['session'] } {
+export function requireAuth (request: FastifyRequest): NonNullable<AuthResult> & { session: NonNullable<AuthResult>['session'] } {
   const authResult = getSessionDecorator(request);
-  
+
   if (!isAuthenticated(authResult)) {
     throw new Error('Authentication required');
   }
-  
+
   return authResult;
 }

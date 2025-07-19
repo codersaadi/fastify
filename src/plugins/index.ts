@@ -1,8 +1,9 @@
 import { env, isRedisEnabled } from '@/config/env';
 import authHook from '@/hooks/auth.hook';
 
+import ws from '@fastify/websocket';
 import { FastifyInstance } from 'fastify';
-import ws from '@fastify/websocket'
+
 import authPlugin from './auth';
 import databasePlugin from './database';
 import multipart from './multipart';
@@ -50,7 +51,7 @@ export const registerPlugins = async (server: FastifyInstance) => {
   // // Register compression (throws error with trpc)
   // https://github.com/fastify/fastify-compress/issues/309
   // https://github.com/trpc/trpc/issues/6628
-  // needs attention 
+  // needs attention
   // await server.register(import('@fastify/compress'), {
   //   global: true,
   //   threshold: 1024,
@@ -95,10 +96,10 @@ export const registerPlugins = async (server: FastifyInstance) => {
   await server.register(multipart);
   await server.register(authPlugin);
   // Register auth hook
- await authHook(server)
-await server.register(ws);
+  await authHook(server);
+  await server.register(ws);
 
-  await server.register(trpcPlugin)
+  await server.register(trpcPlugin);
   // Register Swagger documentation
   await server.register(import('@fastify/swagger'), {
     swagger: {

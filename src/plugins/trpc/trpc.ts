@@ -1,4 +1,5 @@
 import { AuthResult, getSessionDecorator } from '@/decorators/session.decorator';
+
 import { initTRPC, TRPCError } from '@trpc/server';
 import { CreateFastifyContextOptions } from '@trpc/server/adapters/fastify';
 import { FastifyRequest } from 'fastify';
@@ -13,9 +14,9 @@ export interface AuthenticatedRequest extends FastifyRequest {
 // Create context for tRPC
 export const createTRPCContext = async ({
   req,
-  res,
-}: CreateFastifyContextOptions) => {  
-   let auth;
+  res
+}: CreateFastifyContextOptions) => {
+  let auth;
   try {
     auth = getSessionDecorator(req);
   } catch (error) {
@@ -24,9 +25,9 @@ export const createTRPCContext = async ({
     req.log?.warn({ error }, 'Failed to get auth session');
   }
   return {
-    req: req,
+    req,
     res,
-    auth,
+    auth
   };
 };
 
@@ -35,16 +36,16 @@ export type Context = Awaited<ReturnType<typeof createTRPCContext>>;
 // Initialize tRPC
 const t = initTRPC.context<Context>().create({
   transformer: superjson,
-  errorFormatter({ shape, error }) {
+  errorFormatter ({ shape, error }) {
     return {
       ...shape,
       data: {
         ...shape.data,
         zodError:
-          error.cause instanceof ZodError ? error.cause.flatten() : null,
-      },
+          error.cause instanceof ZodError ? error.cause.flatten() : null
+      }
     };
-  },
+  }
 });
 
 // Base router and procedure
@@ -59,9 +60,9 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
   return next({
     ctx: {
       ...ctx,
-      auth: ctx.auth,
-     
-    },
+      auth: ctx.auth
+
+    }
   });
 });
 
@@ -73,17 +74,17 @@ const enforceUserIsAdmin = t.middleware(({ ctx, next }) => {
   if (!ctx.auth?.user) {
     throw new TRPCError({ code: 'UNAUTHORIZED' });
   }
-  
-//   Add your admin check logic here
-  if (!(ctx.auth.user.role === "admin")) {
+
+  //   Add your admin check logic here
+  if (!(ctx.auth.user.role === 'admin')) {
     throw new TRPCError({ code: 'FORBIDDEN' });
   }
-  
+
   return next({
     ctx: {
       ...ctx,
-      auth: ctx.auth,
-    },
+      auth: ctx.auth
+    }
   });
 });
 
