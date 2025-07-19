@@ -5,9 +5,9 @@ import { GoogleOptions } from 'better-auth/social-providers';
 // REDIRECT_URL : e.g http://localhost:3000/api/auth/callback/google
 const google = {
   clientId: env.GOOGLE_CLIENT_ID as string,
-  clientSecret: env.GOOGLE_CLIENT_SECRET as string,
+  clientSecret: env.GOOGLE_CLIENT_SECRET as string
   // if needed
-  // prompt: "select_account", 
+  // prompt: "select_account",
   // accessType :"offline"
 } satisfies GoogleOptions;
 export { google };

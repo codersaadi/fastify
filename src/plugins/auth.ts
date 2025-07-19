@@ -1,4 +1,4 @@
-import auth from '@/auth';
+import { auth } from '@/auth';
 
 import type { FastifyInstance } from 'fastify';
 import FastifyBetterAuth from 'fastify-better-auth';

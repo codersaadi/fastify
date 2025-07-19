@@ -7,5 +7,3 @@ export const huggingFace: HuggingFaceOptions = {
   clientSecret: env.HUGGING_FACE_CLIENT_SECRET!
 };
 // REDIRECT_URL : e.g http://localhost:3000/api/auth/callback/huggingface for local development. For production, you should set it to the URL of your application.
-
-

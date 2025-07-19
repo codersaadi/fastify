@@ -114,7 +114,7 @@ const envSchema = z.object({
 
   TIKTOK_CLIENT_ID: z.string().optional(),
   TIKTOK_CLIENT_SECRET: z.string().optional(),
-  TIKTOK_CLIENT_KEY : z.string().optional(),
+  TIKTOK_CLIENT_KEY: z.string().optional(),
 
   REDDIT_CLIENT_ID: z.string().optional(),
   REDDIT_CLIENT_SECRET: z.string().optional(),
@@ -130,7 +130,7 @@ const envSchema = z.object({
 
   GITLAB_CLIENT_ID: z.string().optional(),
   GITLAB_CLIENT_SECRET: z.string().optional(),
-  GITLAB_ISSUER : z.string().optional(),
+  GITLAB_ISSUER: z.string().optional(),
 
   DROPBOX_CLIENT_ID: z.string().optional(),
   DROPBOX_CLIENT_SECRET: z.string().optional(),
@@ -138,11 +138,13 @@ const envSchema = z.object({
   HUGGING_FACE_CLIENT_ID: z.string().optional(),
   HUGGING_FACE_CLIENT_SECRET: z.string().optional(),
 
-  ENABLE_EMAIL_PASSWORD : z.string().optional().default("false"),
-  DISABLE_SIGNUP : z.string().optional().default("false"),
+  ENABLE_EMAIL_PASSWORD: z.string().optional()
+    .default('false'),
+  DISABLE_SIGNUP: z.string().optional()
+    .default('false'),
 
   SPOTIFY_CLIENT_SECRET: z.string().optional(),
-  SPOTIFY_CLIENT_ID : z.string().optional()
+  SPOTIFY_CLIENT_ID: z.string().optional()
 });
 
 export type EnvConfig = z.infer<typeof envSchema>;
@@ -172,10 +174,10 @@ const parseEnv = (): EnvConfig => {
       }
     }
 
-     // Additional validation for trusted origins
+    // Additional validation for trusted origins
     if (parsed.TRUSTED_ORIGINS) {
-      const origins = parsed.TRUSTED_ORIGINS.split(',').map(origin => origin.trim());
-      
+      const origins = parsed.TRUSTED_ORIGINS.split(',').map((origin) => origin.trim());
+
       for (const origin of origins) {
         try {
           new URL(origin);
@@ -286,8 +288,6 @@ export const getApiConfig = () => ({
   }
 });
 
-
-
 /**
  * Parse trusted origins from environment variable
  * @returns Array of trusted origin URLs
@@ -296,11 +296,11 @@ export const getTrustedOriginsFromEnv = (): string[] => {
   if (!env.TRUSTED_ORIGINS) {
     return [];
   }
-  
+
   return env.TRUSTED_ORIGINS
     .split(',')
-    .map(origin => origin.trim())
-    .filter(origin => origin.length > 0);
+    .map((origin) => origin.trim())
+    .filter((origin) => origin.length > 0);
 };
 
 /**
@@ -309,17 +309,17 @@ export const getTrustedOriginsFromEnv = (): string[] => {
  */
 export const getAllTrustedOrigins = (): string[] => {
   const origins = new Set<string>();
-  
+
   // Add CORS origin
   origins.add(env.CORS_ORIGIN);
-  
+
   // Add BETTER_AUTH_URL if configured
   if (env.BETTER_AUTH_URL) {
     origins.add(env.BETTER_AUTH_URL);
   }
-  
+
   // Add additional trusted origins
-  getTrustedOriginsFromEnv().forEach(origin => origins.add(origin));
-  
+  getTrustedOriginsFromEnv().forEach((origin) => origins.add(origin));
+
   return Array.from(origins);
 };

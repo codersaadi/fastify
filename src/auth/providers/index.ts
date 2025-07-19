@@ -11,12 +11,12 @@ import { kick } from './kick.js';
 import { linkedin } from './linkedin.js';
 import { microsoft } from './microsoft.js';
 import { reddit } from './reddit.js';
+import { roblox } from './roblox.js';
+import { spotify } from './spotify.js';
 import { tiktok } from './tiktok.js';
 import { twitch } from './twitch.js';
 import { twitter } from './twitter.js';
 import { zoom } from './zoom.js';
-import { spotify } from './spotify.js';
-import { roblox } from './roblox.js';
 
 export const allProviders = {
   google,
@@ -75,7 +75,7 @@ const parseAuthProviders = (providerString?: string): ProviderName[] => {
   return providers;
 };
 
-export const getAuthProviders = (): Record<string ,ProviderConfig> => {
+export const getAuthProviders = (): Record<string, ProviderConfig> => {
   const enabledProviderNames = parseAuthProviders(env.AUTH_PROVIDERS);
 
   if (enabledProviderNames.length === 0) {
@@ -102,8 +102,8 @@ export const getAuthProviders = (): Record<string ,ProviderConfig> => {
   return providers.reduce((acc, { name, config }) => {
     acc[name] = config;
     return acc;
-  }, {} as Record<string, ProviderConfig>)
-}
+  }, {} as Record<string, ProviderConfig>);
+};
 
 export const getEnabledProviderNames = (): ProviderName[] => {
   return parseAuthProviders(env.AUTH_PROVIDERS);

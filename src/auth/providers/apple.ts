@@ -6,7 +6,5 @@ export const apple: AppleOptions = {
   clientId: env.APPLE_CLIENT_ID!,
   clientSecret: env.APPLE_CLIENT_SECRET!,
   // Optional
-  appBundleIdentifier: process.env.APPLE_APP_BUNDLE_IDENTIFIER as string,
+  appBundleIdentifier: process.env.APPLE_APP_BUNDLE_IDENTIFIER as string
 };
-
-

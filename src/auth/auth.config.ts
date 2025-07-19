@@ -1,3 +1,5 @@
+import { env, getTrustedOriginsFromEnv } from '@/config/env';
+
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { admin, openAPI } from 'better-auth/plugins';
@@ -5,7 +7,6 @@ import { admin, openAPI } from 'better-auth/plugins';
 import { getAuthProviders, isProviderEnabled } from './providers';
 
 import { db } from '../db/index';
-import { env, getTrustedOriginsFromEnv } from '@/config/env';
 export const authConfig = betterAuth({
   database: drizzleAdapter(db, {
     provider: 'pg',
@@ -26,10 +27,9 @@ export const authConfig = betterAuth({
     }
   },
   emailAndPassword: {
-    enabled: env.ENABLE_EMAIL_PASSWORD === "true",
-    disableSignUp : env.DISABLE_SIGNUP === "true",
+    enabled: env.ENABLE_EMAIL_PASSWORD === 'true',
+    disableSignUp: env.DISABLE_SIGNUP === 'true'
   },
-  
 
   socialProviders: getAuthProviders(),
 
@@ -39,14 +39,13 @@ export const authConfig = betterAuth({
       generateId: false
     }
   },
-  trustedOrigins : [
-  isProviderEnabled("apple") ? "https://appleid.apple.com" : null,
-  env.BETTER_AUTH_URL,
-  ...getTrustedOriginsFromEnv()
-].filter((origin): origin is string => origin !== null)
+  trustedOrigins: [
+    isProviderEnabled('apple') ? 'https://appleid.apple.com' : null,
+    env.BETTER_AUTH_URL,
+    ...getTrustedOriginsFromEnv()
+  ].filter((origin): origin is string => origin !== null)
 
 });
 
 export type User = typeof authConfig.$Infer.Session.user;
 export type Session = typeof authConfig.$Infer.Session;
-
