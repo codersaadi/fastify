@@ -15,6 +15,7 @@ import { tiktok } from './tiktok.js';
 import { twitch } from './twitch.js';
 import { twitter } from './twitter.js';
 import { zoom } from './zoom.js';
+import { spotify } from './spotify.js';
 
 export const allProviders = {
   google,
@@ -31,7 +32,8 @@ export const allProviders = {
   tiktok,
   twitch,
   reddit,
-  microsoft
+  microsoft,
+  spotify
 } as const;
 
 export type ProviderName = keyof typeof allProviders;

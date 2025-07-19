@@ -5,6 +5,7 @@ import { admin, openAPI } from 'better-auth/plugins';
 import { getAuthProviders, ProviderConfig } from './providers';
 
 import { db } from '../db/index';
+import { env } from '@/config/env';
 
 const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -26,8 +27,10 @@ const auth = betterAuth({
     }
   },
   emailAndPassword: {
-    enabled: true
+    enabled: env.ENABLE_EMAIL_PASSWORD === "true",
+    disableSignUp : env.DISABLE_SIGNUP === "true",
   },
+  
 
   socialProviders: getAuthProviders().reduce((acc, { name, config }) => {
     acc[name] = config;

@@ -112,6 +112,7 @@ const envSchema = z.object({
 
   TIKTOK_CLIENT_ID: z.string().optional(),
   TIKTOK_CLIENT_SECRET: z.string().optional(),
+  TIKTOK_CLIENT_KEY : z.string().optional(),
 
   REDDIT_CLIENT_ID: z.string().optional(),
   REDDIT_CLIENT_SECRET: z.string().optional(),
@@ -127,13 +128,19 @@ const envSchema = z.object({
 
   GITLAB_CLIENT_ID: z.string().optional(),
   GITLAB_CLIENT_SECRET: z.string().optional(),
+  GITLAB_ISSUER : z.string().optional(),
 
   DROPBOX_CLIENT_ID: z.string().optional(),
   DROPBOX_CLIENT_SECRET: z.string().optional(),
 
   HUGGING_FACE_CLIENT_ID: z.string().optional(),
-  HUGGING_FACE_CLIENT_SECRET: z.string().optional()
+  HUGGING_FACE_CLIENT_SECRET: z.string().optional(),
 
+  ENABLE_EMAIL_PASSWORD : z.string().optional().default("false"),
+  DISABLE_SIGNUP : z.string().optional().default("false"),
+
+  SPOTIFY_CLIENT_SECRET: z.string().optional(),
+  SPOTIFY_CLIENT_ID : z.string().optional()
 });
 
 export type EnvConfig = z.infer<typeof envSchema>;
