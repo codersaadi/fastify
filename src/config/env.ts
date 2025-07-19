@@ -142,6 +142,8 @@ const envSchema = z.object({
     .default('false'),
   DISABLE_SIGNUP: z.string().optional()
     .default('false'),
+  
+  // ENABLE_2FA_AUTH : z.string().optional(),
 
   SPOTIFY_CLIENT_SECRET: z.string().optional(),
   SPOTIFY_CLIENT_ID: z.string().optional()

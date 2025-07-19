@@ -14,9 +14,11 @@ export const authConfig = betterAuth({
   }),
   plugins: [
     admin(),
+    
     openAPI({
       path: '/docs'
-    })
+    }),
+
   ],
   session: {
     expiresIn: 60 * 60 * 24 * 7, // 1 week
@@ -44,7 +46,6 @@ export const authConfig = betterAuth({
     env.BETTER_AUTH_URL,
     ...getTrustedOriginsFromEnv()
   ].filter((origin): origin is string => origin !== null)
-
 });
 
 export type User = typeof authConfig.$Infer.Session.user;
