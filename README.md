@@ -29,8 +29,8 @@ A production-ready, feature-rich boilerplate for building robust and scalable AP
 ### 1. Clone the repository
 
 ```bash
-git clone <repository-url>
-cd fastify-starter
+git clone https://github.com/codersaadi/fastify
+cd fastify
 ```
 
 ### 2. Install dependencies
@@ -100,7 +100,7 @@ The API will be available at `http://localhost:3000`.
 │   ├── decorators/     # Fastify decorators
 │   ├── hooks/          # Fastify hooks
 │   ├── plugins/        # Fastify plugins (auth, db, tRPC, etc.)
-│   ├── routers/        # API route definitions (trpc )
+│   ├── routers/        # API route definitions (trpc)
 │   ├── schema/         # Reusable Zod schemas
 │   ├── types/          # Global type definitions
 │   └── utils/          # Utility functions
