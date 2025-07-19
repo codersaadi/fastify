@@ -7,10 +7,12 @@ import fp from 'fastify-plugin';
 import { AppRouter, appRouter } from './router';
 import { createTRPCContext } from './trpc';
 const trpcPrefix: string = '/api/trpc';
+
 const trpcPlugin: FastifyPluginAsync = async (fastify: FastifyInstance) => {
+const isWebSocket = isWebSocketEnabled()
   await fastify.register(fastifyTRPCPlugin, {
-    useWSS: isWebSocketEnabled,
-    keepAlive: isWebSocketEnabled
+    useWSS: isWebSocket,
+    keepAlive: isWebSocket
       ? {
           enabled: true,
           pingMs: 30000, // server ping message interval in milliseconds

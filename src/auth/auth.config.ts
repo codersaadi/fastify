@@ -29,8 +29,8 @@ export const authConfig = betterAuth({
     }
   },
   emailAndPassword: {
-    enabled: env.ENABLE_EMAIL_PASSWORD === 'true',
-    disableSignUp: env.DISABLE_SIGNUP === 'true'
+    enabled: env.ENABLE_EMAIL_PASSWORD,
+    disableSignUp: env.DISABLE_SIGNUP
   },
 
   socialProviders: getAuthProviders(),
