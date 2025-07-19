@@ -57,4 +57,5 @@ export const verifications = pgTable('verifications', {
   createdAt: timestamp('created_at').$defaultFn(() => /* @__PURE__ */ new Date()),
   updatedAt: timestamp('updated_at').$defaultFn(() => /* @__PURE__ */ new Date())
 });
+
 export * from './types';

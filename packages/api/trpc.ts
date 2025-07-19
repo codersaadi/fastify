@@ -62,23 +62,3 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
 // Protected procedure that requires authentication
 export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
 
-// Admin procedure (example)
-const enforceUserIsAdmin = t.middleware(({ ctx, next }) => {
-  if (!ctx.auth?.user) {
-    throw new TRPCError({ code: 'UNAUTHORIZED' });
-  }
-
-  //   Add your admin check logic here
-  if (!(ctx.auth.user.role === 'admin')) {
-    throw new TRPCError({ code: 'FORBIDDEN' });
-  }
-
-  return next({
-    ctx: {
-      ...ctx,
-      auth: ctx.auth
-    }
-  });
-});
-
-export const adminProcedure = t.procedure.use(enforceUserIsAdmin);

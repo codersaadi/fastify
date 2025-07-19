@@ -314,10 +314,19 @@ export const env = createEnv({
     TWILIO_AUTH_TOKEN: z.string().optional(),
     TWILIO_PHONE_NUMBER: z.string().optional(),
 
-    // // AWS SNS configuration
-    // AWS_ACCESS_KEY_ID: z.string().optional(),
-    // AWS_SECRET_ACCESS_KEY: z.string().optional(),
-    // AWS_REGION: z.string().optional(),
+    SMS_RATE_LIMIT_WINDOW_MS: z.coerce.number().min(1)
+      .max(3600000)
+      .default(3600000),
+    SMS_RATE_LIMIT_MAX_ATTEMPTS: z.coerce.number().min(1)
+      .max(10)
+      .default(10),
+    SMS_CUSTOM_WEBHOOK_URL: z.string().optional(),
+    SMS_CUSTOM_API_KEY: z.string().optional(),
+
+    // AWS SNS configuration
+    AWS_ACCESS_KEY_ID: z.string().optional(),
+    AWS_SECRET_ACCESS_KEY: z.string().optional(),
+    AWS_REGION: z.string().optional(),
 
     // WebSocket
     ENABLE_WEBSOCKET: z.coerce.boolean().default(false)

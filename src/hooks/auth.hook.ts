@@ -12,7 +12,6 @@ async function authHook (fastify: FastifyInstance) {
       headers: fromNodeHeaders(req.headers)
     });
     console.log('auth hook is getting ', { auth });
-
     if (auth) {
       req.setDecorator('auth', auth);
     }
